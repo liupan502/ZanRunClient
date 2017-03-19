@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ZanRunWorkClient</string>
+    <string name="order_no_name">订单编号</string>
+    <string name="production_no_name">产品</string>
+    <string name="date_name">日期</string>
+    <string name="number_name">数量</string>
+    <string name="request_name">加工要求</string>
+</resources>

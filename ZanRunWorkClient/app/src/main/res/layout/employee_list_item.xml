@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/employee_name"
+        android:layout_width = "wrap_content"
+        android:layout_height = "match_parent"
+        android:text = "employee_name"
+        android:layout_alignParentLeft="true"
+
+
+
+        />
+
+    <TextView
+        android:id="@+id/production_num"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+
+        android:text="production_num"
+        
+        android:layout_marginBottom="30dp"
+
+        />
+
+    <TextView
+        android:id="@+id/bad_num"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+
+        android:text="bad_num"
+        android:layout_marginTop="50dp"
+
+        />
+
+
+</RelativeLayout>

@@ -3,7 +3,10 @@ package com.example.liupan.zanrunworkclient;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.SimpleAdapter;
@@ -27,6 +30,14 @@ public class MainActivity extends AppCompatActivity {
 
     private Task task = new Task();
 
+
+    private void processListenNewTask(Object taskId){
+
+    }
+
+    private void processListenNewHuman(Object humanId){
+
+    }
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
@@ -110,9 +121,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private class PortListenHandler extends Handler{
+
+        public PortListenHandler(Looper looper){
+            super(looper);
+        }
+        @Override
+        public void handleMessage(Message msg){
+            switch (msg.what){
+                case PortListener.HUNMAN_TYPE:
+
+                    break;
+                case PortListener.TASK_TYPE:
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
     public native String stringFromJNI();
+
+
 }

@@ -26,12 +26,64 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<HashMap<String,Object>> employeeList = new ArrayList<HashMap<String, Object>>();
 
+    private enum Mode{
+        MODE_DEFAULT,
+        MODE_QC_CONFIRM,
+        MODE_MANAGER_CONFIRM
+    };
 
+    private  Mode currentMode = Mode.MODE_DEFAULT;
 
     private Task task = new Task();
 
+    private void processGetNewHuman(String humanId){
+        SqlLiteProxy sqlLiteProxy =  SqlLiteProxy.getInstance();
+        Employee employee = sqlLiteProxy.findEmployee(humanId);
+        int employeeLevel = employee.getEmployeeLevel();
+        switch (employeeLevel){
+            case Employee.GENERAL_EMPLOYEE:
+                processGetNewGeneralEmployee(employee);
+                break;
+            case Employee.QC_EMPLOYEE:
+                processGetNewQC(employee);
+                break;
+            case Employee.MANAGER_EMPLOYEE:
+                processGetNewManager(employee);
+                break;
+            default:
+                break;
+        }
+    }
 
-    private void processListenNewTask(Object taskId){
+    private void processGetNewGeneralEmployee(Employee employee){
+        if(currentMode != Mode.MODE_DEFAULT)
+            return;
+        insertEmplpoyee(employee);
+    }
+
+    private void processGetNewQC(Employee employee){
+        if(currentMode != Mode.MODE_QC_CONFIRM)
+            return;
+
+    }
+
+    private void processGetNewManager(Employee employee){
+        if(currentMode != Mode.MODE_MANAGER_CONFIRM)
+            return;
+    }
+
+    private void processGetNewTask(String taskId){
+        if(currentMode != Mode.MODE_DEFAULT)
+            return;
+        saveCurrentTask();
+        changeToTask(taskId);
+    }
+
+    private void saveCurrentTask(){
+
+    }
+
+    private void changeToTask(String taskId){
 
     }
 

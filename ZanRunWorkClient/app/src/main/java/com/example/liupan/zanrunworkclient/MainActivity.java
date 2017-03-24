@@ -1,6 +1,7 @@
 package com.example.liupan.zanrunworkclient;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Handler;
@@ -9,9 +10,15 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.ListView;
+
+import com.example.liupan.zanrunworkclient.ConfirmDialog.*;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +28,8 @@ import com.example.liupan.zanrunworkclient.*;
 import com.example.liupan.zanrunworkclient.EmployeeSimpleAdapter;
 
 import com.example.liupan.zanrunworkclient.entity.*;
+
+import Dialog.QCConfirmDialog;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     private  Mode currentMode = Mode.MODE_DEFAULT;
 
-    private Task task = new Task();
+    private Task task = null;
 
     private void processGetNewHuman(String humanId){
         SqlLiteProxy sqlLiteProxy =  SqlLiteProxy.getInstance();
@@ -127,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         EmployeeSimpleAdapter simpleAdapter = new EmployeeSimpleAdapter(this,employeeList,R.layout.employee_list_item,strs,ids);
         //SimpleAdapter simpleAdapter = new SimpleAdapter(this,employeeList,R.layout.employee_list_item,strs,ids);
         listView.setAdapter(simpleAdapter);
-
+        listView.setOnItemClickListener(new EmployeeItemClickListener());
 
 
         Intent startIntent = new Intent(this, ZanRunService.class);
@@ -192,6 +201,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private class EmployeeItemClickListener implements ListView.OnItemClickListener{
+        @Override
+        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3){
+            String name = (String)(employeeList.get(arg2).get(EmployeeSimpleAdapter.EMPLOYEE_NAME));
+            Log.i("tag",name);
+
+            QCConfirmDialog qcConfirmDialog = new QCConfirmDialog((Context)MainActivity.this);
+            qcConfirmDialog.show();
+        }
+    }
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.

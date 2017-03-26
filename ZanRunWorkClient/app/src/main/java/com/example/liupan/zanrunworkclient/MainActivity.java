@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.ListView;
+import com.example.liupan.zanrunworkclient.*;
 
 import com.example.liupan.zanrunworkclient.ConfirmDialog.*;
 
@@ -144,6 +145,11 @@ public class MainActivity extends AppCompatActivity {
 
         Intent bindIntent = new Intent(this, ZanRunService.class);
         bindService(bindIntent, connection, BIND_AUTO_CREATE);
+
+
+        PortListener portListener = new PortListener();
+        Thread thread = new Thread(portListener);
+        thread.start();
     }
 
     protected void getData(){

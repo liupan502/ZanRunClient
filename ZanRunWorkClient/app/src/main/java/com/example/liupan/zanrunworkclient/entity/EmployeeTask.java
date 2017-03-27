@@ -6,14 +6,43 @@ package com.example.liupan.zanrunworkclient.entity;
 
 import Employee;
 import Task;
+import Procedure;
+
+
 public class EmployeeTask extends BaseObject {
 
 	private String employeeId;
 	private String taskId;
+	private String procedureId;
 	private String employeeName;
 	private int productionNum;
 	private int badProductionNum;
 	private int status;
+
+	//public static final int ET_STATUS_NONE = 0;
+	public static final int ET_STATUS_DEFAULT = 1;
+	public static final int ET_STATUS_QC_CONFIRM = 2;
+	public static final int ET_STATUS_MANAGER_CONFIRM = 3;
+
+	public EmployeeTask(Employee employee,Task task,Procedure procedure){
+		super();
+		status = ET_STATUS_DEFAULT;
+		this.setProductionNum(0);
+		this.setBadProductionNum(0);
+		this.setEmployeeName(employee.getName());
+		this.setEmployeeId(employee.getId());
+		this.setProcedureId(procedure.getId());
+		this.setTaskId(task.getId());
+
+	}
+
+	public String getProcedureId(){
+		return procedureId;
+	}
+
+	public void setProcedureId(String procedureId){
+		this.procedureId = procedureId;
+	}
 
 	public String getEmployeeName(){
 		return employeeName;

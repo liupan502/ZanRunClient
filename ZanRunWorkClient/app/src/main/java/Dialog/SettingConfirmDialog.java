@@ -33,9 +33,9 @@ public class SettingConfirmDialog extends BaseConfirmDialog {
     public ClickListenerInterFace clif = null;
 
     public interface  ClickListenerInterFace{
-        public void DoConfirm(String type,String Ip);
+        public void DoConfirm(String type,String Ip,Dialog dialog);
 
-        public void DoCancel();
+        public void DoCancel(Dialog dialog);
     }
 
     @Override

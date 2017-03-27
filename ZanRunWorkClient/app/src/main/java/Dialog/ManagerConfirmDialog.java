@@ -18,9 +18,12 @@ import com.example.liupan.zanrunworkclient.R;
 public class ManagerComfirmDialog extends BaseConfirmDialog {
     private  Context context;
 
-    public ManagerComfirmDialog(Context context) {
+    private String employeeTaskId = null;
+
+    public ManagerConfirmDialog(Context context,String employeeTaskId) {
         super(context);
         this.context = context;
+        this.employeeTaskId = employeeTaskId;
     }
 
     @Override
@@ -33,9 +36,9 @@ public class ManagerComfirmDialog extends BaseConfirmDialog {
     public ClickListenerInterFace clif = null;
 
     public interface  ClickListenerInterFace{
-        public void DoConfirm(int proNum,int badProNum);
+        public void DoConfirm(int proNum,int badProNum,String employeeTaskId,Dialog dialog);
 
-        public void DoCancel();
+        public void DoCancel(Dialog dialog);
     }
 
     @Override

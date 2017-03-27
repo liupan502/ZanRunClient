@@ -20,6 +20,8 @@ import com.example.liupan.zanrunworkclient.*;
 
 import com.example.liupan.zanrunworkclient.ConfirmDialog.*;
 
+import Dialog.*;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -222,6 +224,43 @@ public class MainActivity extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native String stringFromJNI();
+
+    private class ManagerConfirmProcess implements ManagerConfirmDialog.ClickListenerInterFace{
+        public void DoConfirm(int proNum,int badProNum,String employeeTaskId,Dialog dialog){
+            if(dialog != null)
+                dialog.dismiss();
+        }
+
+        public void DoCancel(Dialog dialog){
+            if(dialog != null)
+                dialog.dismiss();
+        }
+    } 
+
+    private class QCConfirmProcess implements QCConfirmDialog.ClickListenerInterFace{
+        public void DoConfirm(String employeeTaskId,Dialog dialog){
+            if(dialog != null)
+                dialog.dismiss();
+        }
+
+        public void DoCancel(Dialog dialog){
+            if(dialog != null)
+                dialog.dismiss();
+        }
+    }
+
+    private class SettingConfirmProcess implements SettingConfirmDialog.ClickListenerInterFace{
+        public void DoConfirm(String type,String Ip,Dialog dialog){
+            if(dialog != null)
+                dialog.dismiss();
+        }
+
+        public void DoCancel(Dialog dialog){
+            if(dialog != null){
+                dialog.dismiss();
+            }
+        }
+    }
 
 
 }

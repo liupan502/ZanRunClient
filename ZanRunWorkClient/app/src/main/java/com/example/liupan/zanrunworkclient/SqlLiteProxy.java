@@ -430,12 +430,14 @@ public class SqlLiteProxy {
         int statusIndex = cursor.getColumnIndexOrThrow("status");
         int productionNum = cursor.getColumnIndexOrThrow("pnum");
         int badProductionNum = cursor.getColumnIndexOrThrow("bpnum");
+        int procedureIdIndex = cursor.getColumnIndexOrThrow("pid");
 
         String uid = cursor.getString(uidIndex);
         String cid = cursor.getString(cidIndex);
         String ename = cursor.getString(employeeNameIndex);
         String eid = cursor.getString(employeeIdIndex);
-        String tid = cursor.getString(taslIdIndex);
+        String tid = cursor.getString(taskIdIndex);
+        String pid = cursor.getString(procedureIdIndex);
         int status = cursor.getInt(statusIndex);
         int pnum = cursor.getInt(productionNum);
         int bpnum = cursor.getInt(badProductionNum);
@@ -449,6 +451,7 @@ public class SqlLiteProxy {
         employeeTask.setEmployeeName(ename);
         employeeTask.setEmployeeId(eid);
         employeeTask.setTaskId(tid);
+        employeeTask.setProcedureId(pid);
         
         return employeeTask;
     }
@@ -488,12 +491,13 @@ public class SqlLiteProxy {
         if(!isAvailable())
             return false;
         String sql = "update employee_task_table set cid = ?, ename = ?,eid = ?,
-        tid = ?, status = ?, pnum = ?, bpnum = ? where uid = ?";
+        tid = ?, pid = ?,status = ?, pnum = ?, bpnum = ? where uid = ?";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{et.getCompanyId(),
             et.getEmployeeName(),
             et.getEmployeeId(),
             et.getTaskId(),
+            et.getProcedureId(),
             et.getStatus(),
             et.getProductionNum(),
             et.getBadProductionNum(),
@@ -515,10 +519,18 @@ public class SqlLiteProxy {
     public boolean insertEmployeeTask(EmployeeTask et){
         if(!isAvailable())
             return false;
-        String sql = "insert into employee_task_table (uid,cid,ename,eid,tid,status,pnum,bpnum) values(?,?,?,?,?,?,?,?)";
+        String sql = "insert into employee_task_table (uid,cid,ename,eid,tid,pid,status,pnum,bpnum) values(?,?,?,?,?,?,?,?)";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.execSQL(sql,new Object[]{pi.getId(),pi.getCompanyId(),pi.getFlowCardNo(),
-                pi.getQcConfirmStatus(),pi.getNum(),pi.getProcedureRequest()});
+        db.execSQL(sql,new Object[]{et.getId(),
+            et.getCompanyId(),
+            et.getEmployeeName(),
+            et.getEmployeeId(),
+            et.getTaskId(),
+            et.getProcedureId(),
+            et.getStatus(),
+            et.getProductionNum(),
+            et.getBadProductionNum()
+        });
         db.close();
         return true;
     }

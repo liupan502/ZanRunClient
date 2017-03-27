@@ -18,9 +18,12 @@ import com.example.liupan.zanrunworkclient.R;
 public class QCConfirmDialog extends BaseConfirmDialog {
 
     private  Context context;
-    public QCConfirmDialog(Context context) {
+
+    private String employeeTaskId = null;
+    public QCConfirmDialog(Context context,String employeeTaskId) {
         super(context);
         this.context = context;
+        this.employeeTaskId = employeeTaskId; 
     }
 
     @Override
@@ -67,8 +70,8 @@ public class QCConfirmDialog extends BaseConfirmDialog {
     }
 
     public interface  ClickListenerInterFace{
-        public void DoConfirm();
+        public void DoConfirm(String employeeTaskId,Dialog dialog);
 
-        public void DoCancel();
+        public void DoCancel(Dialog dialog);
     }
 }

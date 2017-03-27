@@ -35,6 +35,9 @@ public class ZanRunDBHelper extends SQLiteOpenHelper {
                 "name varchar(128),no varchar(128))";
         db.execSQL(createProcedureSql);
 
+        String createEmployeeTaskSql = "create table employee_task_table(uid varchar(128) ,cid varchar(128)," +
+                "ename varchar(128),eid varchar(128),tid varchar(128) status int,pnum int, bpnum int)";
+
         Log.i(TAG,"create db");
         db.close();
     }

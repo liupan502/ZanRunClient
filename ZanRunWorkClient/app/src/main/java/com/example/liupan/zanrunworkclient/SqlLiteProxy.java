@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 import com.example.liupan.zanrunworkclient.ZanRunDBHelper;
 
+
+
 /**
  * Created by liupan on 2017/3/9.
  */
@@ -23,6 +25,8 @@ public class SqlLiteProxy {
     private static final String PROCEDURE_TABLE = "procedure_table";
 
     private static final String PROCEDURE_INFO_TABLE = "procedureinfo_table";
+
+    private static final String EMPLOYEE_TASK_TABLE = "employee_task_table";
 
     public static SqlLiteProxy getInstance(){
         if(instance == null){
@@ -408,6 +412,110 @@ public class SqlLiteProxy {
         if(!isAvailable())
             return false;
         String sql = "insert into procedureinfo_table (uid,cid,fcid,qstatus,num,req) values(?,?,?,?,?,?)";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL(sql,new Object[]{pi.getId(),pi.getCompanyId(),pi.getFlowCardNo(),
+                pi.getQcConfirmStatus(),pi.getNum(),pi.getProcedureRequest()});
+        db.close();
+        return true;
+    }
+
+    EmployeeTask getEmployeeTaskFromCursor(cursor){
+        EmployeeTask employeeTask = new EmployeeTask();
+
+        int uidIndex = cursor.getColumnIndexOrThrow("uid");
+        int cidIndex = cursor.getColumnIndexOrThrow("cid");
+        int employeeNameIndex = cursor.getColumnIndexOrThrow("ename");
+        int employeeIdIndex = cursor.getColumnIndexOrThrow("eid");
+        int taskIdIndex = cursor.getColumnIndexOrThrow("tid");
+        int statusIndex = cursor.getColumnIndexOrThrow("status");
+        int productionNum = cursor.getColumnIndexOrThrow("pnum");
+        int badProductionNum = cursor.getColumnIndexOrThrow("bpnum");
+
+        String uid = cursor.getString(uidIndex);
+        String cid = cursor.getString(cidIndex);
+        String ename = cursor.getString(employeeNameIndex);
+        String eid = cursor.getString(employeeIdIndex);
+        String tid = cursor.getString(taslIdIndex);
+        int status = cursor.getInt(statusIndex);
+        int pnum = cursor.getInt(productionNum);
+        int bpnum = cursor.getInt(badProductionNum);
+
+
+        employeeTask.setId(uid);
+        employeeTask.setCompanyId(cid);
+        employeeTask.setProductionNum(pnum);
+        employeeTask.setBadProductionNum(bpnum);
+        employeeTask.setStatus(status);
+        employeeTask.setEmployeeName(ename);
+        employeeTask.setEmployeeId(eid);
+        employeeTask.setTaskId(tid);
+        
+        return employeeTask;
+    }
+    public ArrayList<EmployeeTask> employeeTasks(){
+        if(!isAvailable())
+            return null;
+        String sql = "select * from employee_task_table ";
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(sql,new String[]{});
+        ArrayList<EmployeeTask> result = new ArrayList<EmployeeTask>();
+        if(cursor.moveToFirst()){
+            for(int i=0;i<cursor.getCount();i++){
+                cursor.moveToPosition(i);
+                EmployeeTask employeeTask = getEmployeeTaskFromCursor(cursor);
+                result.add(procedureInfo);
+            }
+        }
+        db.close();
+        return result;
+    }
+
+    public EmployeeTask findEmployeeTask(String employeeTaskId){
+        if(!isAvailable())
+            return null;
+        String sql = "select * from employee_task_table where uid = ?";
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        EmployeeTask result = null;
+        Cursor cursor = db.rawQuery(sql,new String[]{employeeTaskId});
+        if(cursor.moveToFirst()){
+            result = getEmployeeTaskFromCursor(cursor);
+        }
+        db.close();
+        return result;
+    }
+
+    public boolean updateEmployeeTask(EmployeeTask et){
+        if(!isAvailable())
+            return false;
+        String sql = "update employee_task_table set cid = ?, ename = ?,eid = ?,
+        tid = ?, status = ?, pnum = ?, bpnum = ? where uid = ?";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL(sql,new Object[]{et.getCompanyId(),
+            et.getEmployeeName(),
+            et.getEmployeeId(),
+            et.getTaskId(),
+            et.getStatus(),
+            et.getProductionNum(),
+            et.getBadProductionNum(),
+            et.getId()});
+        db.close();
+        return true;
+    }
+
+    public boolean deleteEmployeeTask(String employeeTaskId){
+        if(!isAvailable())
+            return false;
+        String sql = "delete from employee_task_table where uid = ?";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL(sql,new Object[]{employeeTaskId});
+        db.close();
+        return true;
+    }
+
+    public boolean insertEmployeeTask(EmployeeTask et){
+        if(!isAvailable())
+            return false;
+        String sql = "insert into employee_task_table (uid,cid,ename,eid,tid,status,pnum,bpnum) values(?,?,?,?,?,?,?,?)";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{pi.getId(),pi.getCompanyId(),pi.getFlowCardNo(),
                 pi.getQcConfirmStatus(),pi.getNum(),pi.getProcedureRequest()});

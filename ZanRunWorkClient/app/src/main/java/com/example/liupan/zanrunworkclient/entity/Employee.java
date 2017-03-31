@@ -13,12 +13,13 @@ public class Employee extends BaseObject {
         setEmployeeNo("");
         setEmployeeLevel(-1);
     }
+    public static final int UNKOWN_EMPLOYEE = 0;
 
-    public static final int GENERAL_EMPLOYEE = 0;
+    public static final int GENERAL_EMPLOYEE = 1;
 
-    public static final int QC_EMPLOYEE = 1;
+    public static final int QC_EMPLOYEE = 2;
 
-    public static final int MANAGER_EMPLOYEE = 2;
+    public static final int MANAGER_EMPLOYEE = 3;
 
     // 雇员编号
     private  String employeeNo;

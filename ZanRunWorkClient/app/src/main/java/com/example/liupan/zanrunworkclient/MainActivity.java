@@ -34,6 +34,7 @@ import com.example.liupan.zanrunworkclient.entity.*;
 
 import Dialog.QCConfirmDialog;
 
+
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<HashMap<String,Object>> employeeList = new ArrayList<HashMap<String, Object>>();
@@ -47,6 +48,14 @@ public class MainActivity extends AppCompatActivity {
     private  Mode currentMode = Mode.MODE_DEFAULT;
 
     private Task task = null;
+
+    private ManagerConfirmDialog mcDialog = null;
+
+    private QCConfirmDialog qcDialog = null;
+
+    private SettingConfirmDialog scDialog = null;
+
+    private ZanRunDBHelper dbHelper = null;
 
     private void processGetNewHuman(String humanId){
         SqlLiteProxy sqlLiteProxy =  SqlLiteProxy.getInstance();
@@ -76,7 +85,10 @@ public class MainActivity extends AppCompatActivity {
     private void processGetNewQC(Employee employee){
         if(currentMode != Mode.MODE_QC_CONFIRM)
             return;
-
+        String id = employee.getId();
+        if(qcDialog == null)
+            return;
+        qcDialog.set
     }
 
     private void processGetNewManager(Employee employee){
@@ -99,8 +111,31 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void processListenNewHuman(Object humanId){
+    private void processListenNewHuman(String id){
+        SqlLiteProxy sqlLiteProxy = SqlLiteProxy.getInstance();
+        if(!sqlLiteProxy.isAvailable()){
+            sqlLiteProxy.start(dbHelper);
+        }
+        Employee employee = sqlLiteProxy.findEmployee(id);
+        if(employee == null)
+           return;
+        int level = employee.getEmployeeLevel();
+        switch(level){
+            case Employee.GENERAL_EMPLOYEE:
+                processGetNewGeneralEmployee(employee);
+                break;
+            case Employee.QC_EMPLOYEE:
+                processGetNewQC(employee);
+                break;
+            case Employee.MANAGER_EMPLOYEE:
+                processGetNewManager(employee);
+                break;
+            default:
+                break;
 
+        }
+        
+        sqlLiteProxy.close();
     }
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -127,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dbHelper = new ZanRunDBHelper((Context)this);
 
         // Example of a call to a native method
         TextView tv = (TextView) findViewById(R.id.order_no);
@@ -164,6 +201,8 @@ public class MainActivity extends AppCompatActivity {
             map.put(EmployeeSimpleAdapter.BAD_NUM,2*i+3);
             map.put(EmployeeSimpleAdapter.EMPLOYEE_ID,""+i);
             map.put(EmployeeSimpleAdapter.EMPLOYEE_STATUS,i%2);
+            map.put(EmployeeSimpleAdapter.EMPLOYEE_ID,"id_liupan"+i);
+            map.put(EmployeeSimpleAdapter.EMPLOYEE_TASK_ID,"task_id_liupan"+i);
             employeeList.add(map);
         }
         HashMap<String,Object> emptyMap =  new HashMap<String,Object>();
@@ -198,9 +237,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg){
             switch (msg.what){
-                case PortListener.HUNMAN_TYPE:
-
+                case PortListener.HUNMAN_TYPE:{
+                    String id = (String)msg.obj;
+                    processListenNewHuman(id);
                     break;
+                }
+
+                    
                 case PortListener.TASK_TYPE:
                     break;
                 default:
@@ -212,11 +255,34 @@ public class MainActivity extends AppCompatActivity {
     private class EmployeeItemClickListener implements ListView.OnItemClickListener{
         @Override
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3){
-            String name = (String)(employeeList.get(arg2).get(EmployeeSimpleAdapter.EMPLOYEE_NAME));
+            /*String name = (String)(employeeList.get(arg2).get(EmployeeSimpleAdapter.EMPLOYEE_NAME));
             Log.i("tag",name);
 
             QCConfirmDialog qcConfirmDialog = new QCConfirmDialog((Context)MainActivity.this);
-            qcConfirmDialog.show();
+            qcConfirmDialog.show();*/
+            int employeeTaskStatus = (int)(employeeList.get(arg2).get(EmployeeSimpleAdapter.EMPLOYEE_STATUS));
+            String employeeTaskId = (String)(employeeList.get(arg2).get(EmployeeSimpleAdapter.EMPLOYEE_TASK_ID));
+            switch (employeeTaskStatus){
+                case EmployeeTask.ET_STATUS_DEFAULT:{
+                    qcDialog = new QCConfirmDialog((Context)MainActivity.this,employeeTaskId);
+                    qcDialog.clif = new QCConfirmProcess();
+                    qcDialog.show();
+                    break;
+                }
+                    
+                case EmployeeTask.ET_STATUS_QC_CONFIRM:{
+                    mcDialog = new ManagerConfirmDialog((Context)MainActivity.this,employeeTaskId);
+                    mcDialog.clif = new ManagerConfirmProcess();
+                    mcDialog.show();
+                    break;
+                }
+
+                    
+                case EmployeeTask.ET_STATUS_MANAGER_CONFIRM:
+                    break;
+                default:
+                    break;
+            }
         }
     }
     /**
@@ -227,25 +293,50 @@ public class MainActivity extends AppCompatActivity {
 
     private class ManagerConfirmProcess implements ManagerConfirmDialog.ClickListenerInterFace{
         public void DoConfirm(int proNum,int badProNum,String employeeTaskId,Dialog dialog){
+            
+            for(int i=0;i<employeeList.count();i++){
+                HashMap<String,Object> map = (HashMap<String,Object>)employeeList.get(i);
+                if(map.get(EmployeeSimpleAdapter.EMPLOYEE_TASK_ID) != employeeTaskId)
+                    continue;
+
+                map.put(EmployeeSimpleAdapter.EMPLOYEE_STATUS,EmployeeTask.ET_STATUS_MANAGER_CONFIRM);
+                map.put(EmployeeSimpleAdapter.BAD_NUM,badProNum);
+                map.put(EmployeeSimpleAdapter.PRODUCTION_NUM,proNum);
+                break;
+            }
+
             if(dialog != null)
                 dialog.dismiss();
+            MainActivity.this.mcDialog = null;
         }
 
         public void DoCancel(Dialog dialog){
             if(dialog != null)
                 dialog.dismiss();
+            MainActivity.this.mcDialog = null;
         }
     } 
 
     private class QCConfirmProcess implements QCConfirmDialog.ClickListenerInterFace{
         public void DoConfirm(String employeeTaskId,Dialog dialog){
+            
+            for(int i=0;i<employeeList.count();i++){
+                HashMap<String,Object> map = (HashMap<String,Object>)employeeList.get(i);
+                if(map.get(EmployeeSimpleAdapter.EMPLOYEE_TASK_ID) != employeeTaskId)
+                    continue;
+
+                map.put(EmployeeSimpleAdapter.EMPLOYEE_STATUS,EmployeeTask.ET_STATUS_QC_CONFIRM);
+                break;
+            }
             if(dialog != null)
                 dialog.dismiss();
+            MainActivity.this.qcDialog = null;
         }
 
         public void DoCancel(Dialog dialog){
             if(dialog != null)
                 dialog.dismiss();
+            MainActivity.this.qcDialog = null;
         }
     }
 
@@ -253,12 +344,14 @@ public class MainActivity extends AppCompatActivity {
         public void DoConfirm(String type,String Ip,Dialog dialog){
             if(dialog != null)
                 dialog.dismiss();
+            MainActivity.this.scDialog = null;
         }
 
         public void DoCancel(Dialog dialog){
             if(dialog != null){
                 dialog.dismiss();
             }
+            MainActivity.this.scDialog = null;
         }
     }
 

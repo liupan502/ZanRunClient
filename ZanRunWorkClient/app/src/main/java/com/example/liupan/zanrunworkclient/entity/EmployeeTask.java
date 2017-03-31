@@ -18,6 +18,8 @@ public class EmployeeTask extends BaseObject {
 	private int productionNum;
 	private int badProductionNum;
 	private int status;
+	private String qcId;
+	private String managerId;
 
 	//public static final int ET_STATUS_NONE = 0;
 	public static final int ET_STATUS_DEFAULT = 1;
@@ -33,6 +35,7 @@ public class EmployeeTask extends BaseObject {
 		this.setEmployeeId(employee.getId());
 		this.setProcedureId(procedure.getId());
 		this.setTaskId(task.getId());
+
 
 	}
 
@@ -90,5 +93,21 @@ public class EmployeeTask extends BaseObject {
 
 	public void setStatus(int status){
 		this.status = status;
+	}
+
+	public String getQCId(){
+		return qcId;
+	}
+
+	public void setQCId(String id){
+		this.qcId = id;
+	}
+
+	public String getManagerId(){
+		return this.managerId;
+	}
+
+	public void setManagerId(String id){
+		this.managerId = id;
 	}
 }

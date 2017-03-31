@@ -29,6 +29,10 @@ public class EmployeeSimpleAdapter extends SimpleAdapter implements AdapterView.
 
     public static final String EMPLOYEE_STATUS = "employee_status";
 
+    public static final String EMPLOYEE_TASK_ID = "employee_task_id";
+
+
+
     public EmployeeSimpleAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
         super(context, data, resource, from, to);
         mContext = context;

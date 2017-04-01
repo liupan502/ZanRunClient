@@ -48,7 +48,7 @@ public class QCConfirmDialog extends BaseConfirmDialog {
             @Override
             public void onClick(View v) {
                 if(clif != null){
-                    clif.DoConfirm();
+                    clif.DoConfirm(employeeTaskId,QCConfirmDialog.this);
                 }
             }
         });

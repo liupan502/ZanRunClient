@@ -20,6 +20,10 @@ public class ManagerComfirmDialog extends BaseConfirmDialog {
 
     private String employeeTaskId = null;
 
+    private TextView badProNumText = null;
+
+    private TextView proNumText = null;
+
     public ManagerConfirmDialog(Context context,String employeeTaskId) {
         super(context);
         this.context = context;
@@ -54,7 +58,11 @@ public class ManagerComfirmDialog extends BaseConfirmDialog {
             @Override
             public void onClick(View v) {
                 if(clif != null){
-                    clif.DoConfirm(0,0);
+                    if(proNumText == null || badProNumText == null)
+                        return;
+                    int badProNum = Integer.parseInt(badProNumText.getText().toString());
+                    int proNum = Integer.parseInt(proNumText.getText().toString())
+                    clif.DoConfirm(proNum,badProNum,employeeTaskId,ManagerConfirmDialog.this);
                 }
             }
         });

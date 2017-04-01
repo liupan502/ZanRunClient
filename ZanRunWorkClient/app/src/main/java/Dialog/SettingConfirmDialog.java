@@ -18,6 +18,10 @@ import com.example.liupan.zanrunworkclient.R;
 public class SettingConfirmDialog extends BaseConfirmDialog {
 
     private Context context;
+
+    private TextView ipText = null;
+
+    private TextView procedureText = null;
     public SettingConfirmDialog(Context context) {
         super(context);
         this.context = context;
@@ -51,7 +55,11 @@ public class SettingConfirmDialog extends BaseConfirmDialog {
             @Override
             public void onClick(View v) {
                 if(clif != null){
-                    clif.DoConfirm("","");
+                    if(ipText == null || procedureText == null)
+                        return;
+                    String type = procedureText.getText().toString();
+                    String ip = ipText.getText().toString();
+                    clif.DoConfirm(type,ip,SettingConfirmDialog.this);
                 }
             }
         });

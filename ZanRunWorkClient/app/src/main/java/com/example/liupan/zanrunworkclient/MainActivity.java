@@ -88,12 +88,16 @@ public class MainActivity extends AppCompatActivity {
         String id = employee.getId();
         if(qcDialog == null)
             return;
-        qcDialog.set
+        qcDialog.SetConfirmButtonStatus(1);
     }
 
     private void processGetNewManager(Employee employee){
         if(currentMode != Mode.MODE_MANAGER_CONFIRM)
             return;
+        String id = employee.getId();
+        if(mcDialog == null)
+            return;
+        mcDialog.SetConfirmButtonStatus(1);
     }
 
     private void processGetNewTask(String taskId){
@@ -266,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
                 case EmployeeTask.ET_STATUS_DEFAULT:{
                     qcDialog = new QCConfirmDialog((Context)MainActivity.this,employeeTaskId);
                     qcDialog.clif = new QCConfirmProcess();
+                    MainActivity.this.currentMode = MainActivity.Mode.MODE_QC_CONFIRM;
                     qcDialog.show();
                     break;
                 }
@@ -273,6 +278,7 @@ public class MainActivity extends AppCompatActivity {
                 case EmployeeTask.ET_STATUS_QC_CONFIRM:{
                     mcDialog = new ManagerConfirmDialog((Context)MainActivity.this,employeeTaskId);
                     mcDialog.clif = new ManagerConfirmProcess();
+                    MainActivity.this.currentMode = MainActivity.Mode.MODE_MANAGER_CONFIRM;
                     mcDialog.show();
                     break;
                 }
@@ -308,12 +314,14 @@ public class MainActivity extends AppCompatActivity {
             if(dialog != null)
                 dialog.dismiss();
             MainActivity.this.mcDialog = null;
+            MainActivity.this.currentMode = MainActivity.Mode.MODE_DEFAULT;
         }
 
         public void DoCancel(Dialog dialog){
             if(dialog != null)
                 dialog.dismiss();
             MainActivity.this.mcDialog = null;
+            MainActivity.this.currentMode = MainActivity.Mode.MODE_DEFAULT;
         }
     } 
 
@@ -331,12 +339,14 @@ public class MainActivity extends AppCompatActivity {
             if(dialog != null)
                 dialog.dismiss();
             MainActivity.this.qcDialog = null;
+            MainActivity.this.currentMode = MainActivity.Mode.MODE_DEFAULT;
         }
 
         public void DoCancel(Dialog dialog){
             if(dialog != null)
                 dialog.dismiss();
             MainActivity.this.qcDialog = null;
+            MainActivity.this.currentMode = MainActivity.Mode.MODE_DEFAULT;
         }
     }
 
@@ -345,6 +355,7 @@ public class MainActivity extends AppCompatActivity {
             if(dialog != null)
                 dialog.dismiss();
             MainActivity.this.scDialog = null;
+            MainActivity.this.currentMode = MainActivity.Mode.MODE_DEFAULT;
         }
 
         public void DoCancel(Dialog dialog){
@@ -352,8 +363,18 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
             MainActivity.this.scDialog = null;
+            MainActivity.this.currentMode = MainActivity.Mode.MODE_DEFAULT;
         }
     }
 
+    private void updateData(){
+        uploadLocalData();
+        pullServerData();
+    }
 
+    private void uploadLocalData(){
+
+    }
+
+    private void pullServerData();
 }

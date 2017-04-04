@@ -1,5 +1,6 @@
 package Dialog;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -28,6 +29,7 @@ public class QCConfirmDialog extends BaseConfirmDialog {
 
     @Override
     public void SetConfirmButtonStatus(int status) {
+
         boolean enanbled = status == 0?false:true;
         Button ensureButton = (Button) findViewById(R.id.QCEnsureButton);
         ensureButton.setEnabled(enanbled);
@@ -57,7 +59,7 @@ public class QCConfirmDialog extends BaseConfirmDialog {
             @Override
             public void onClick(View v) {
                 if(clif != null){
-                    clif.DoCancel();
+                    clif.DoCancel(QCConfirmDialog.this);
                 }
             }
         });

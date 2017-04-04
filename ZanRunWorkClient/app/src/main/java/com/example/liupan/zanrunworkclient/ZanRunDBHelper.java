@@ -17,6 +17,11 @@ public class ZanRunDBHelper extends SQLiteOpenHelper {
         super(context, name, factory, version);
     }
 
+    public ZanRunDBHelper(Context context){
+        super(context,"zanrun.db",null,1);
+
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createEmployeeSql = "create table employee_table(uid varchar(128) , cid varchar(128)," +

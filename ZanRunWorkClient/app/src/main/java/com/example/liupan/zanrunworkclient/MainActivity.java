@@ -1,5 +1,6 @@
 package com.example.liupan.zanrunworkclient;
 
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private  Mode currentMode = Mode.MODE_DEFAULT;
 
     private Task task = null;
+
 
     private ManagerConfirmDialog mcDialog = null;
 
@@ -167,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHelper = new ZanRunDBHelper((Context)this);
+        dbHelper = new ZanRunDBHelper((Context) this);
 
         // Example of a call to a native method
         TextView tv = (TextView) findViewById(R.id.order_no);
@@ -300,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
     private class ManagerConfirmProcess implements ManagerConfirmDialog.ClickListenerInterFace{
         public void DoConfirm(int proNum,int badProNum,String employeeTaskId,Dialog dialog){
             
-            for(int i=0;i<employeeList.count();i++){
+            for(int i=0;i<employeeList.size();i++){
                 HashMap<String,Object> map = (HashMap<String,Object>)employeeList.get(i);
                 if(map.get(EmployeeSimpleAdapter.EMPLOYEE_TASK_ID) != employeeTaskId)
                     continue;
@@ -328,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
     private class QCConfirmProcess implements QCConfirmDialog.ClickListenerInterFace{
         public void DoConfirm(String employeeTaskId,Dialog dialog){
             
-            for(int i=0;i<employeeList.count();i++){
+            for(int i=0;i<employeeList.size();i++){
                 HashMap<String,Object> map = (HashMap<String,Object>)employeeList.get(i);
                 if(map.get(EmployeeSimpleAdapter.EMPLOYEE_TASK_ID) != employeeTaskId)
                     continue;
@@ -376,5 +378,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void pullServerData();
+    private void pullServerData(){
+        
+    }
 }

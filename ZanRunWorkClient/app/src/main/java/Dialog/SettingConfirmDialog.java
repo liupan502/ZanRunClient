@@ -1,5 +1,6 @@
 package Dialog;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.liupan.zanrunworkclient.R;
 
@@ -68,7 +70,7 @@ public class SettingConfirmDialog extends BaseConfirmDialog {
             @Override
             public void onClick(View v) {
                 if(clif != null){
-                    clif.DoCancel();
+                    clif.DoCancel(SettingConfirmDialog.this);
                 }
             }
         });

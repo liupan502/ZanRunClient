@@ -4,9 +4,9 @@ package com.example.liupan.zanrunworkclient.entity;
  * Created by Panda on 2017/3/27.
  */
 
-import Employee;
-import Task;
-import Procedure;
+import com.example.liupan.zanrunworkclient.entity.Employee;
+import com.example.liupan.zanrunworkclient.entity.Task;
+import com.example.liupan.zanrunworkclient.entity.Procedure;
 
 
 public class EmployeeTask extends BaseObject {
@@ -25,6 +25,10 @@ public class EmployeeTask extends BaseObject {
 	public static final int ET_STATUS_DEFAULT = 1;
 	public static final int ET_STATUS_QC_CONFIRM = 2;
 	public static final int ET_STATUS_MANAGER_CONFIRM = 3;
+
+	public EmployeeTask(){
+		super();
+	}
 
 	public EmployeeTask(Employee employee,Task task,Procedure procedure){
 		super();
@@ -68,7 +72,7 @@ public class EmployeeTask extends BaseObject {
 	}
 
 	public void setBadProductionNum(int badProductionNum){
-		return this.badProductionNum;
+		this.badProductionNum = badProductionNum;
 	}
 
 	public String getEmployeeId(){
@@ -83,7 +87,7 @@ public class EmployeeTask extends BaseObject {
 		return taskId;
 	}
 
-	public String setTaskId(String taskId){
+	public void setTaskId(String taskId){
 		this.taskId = taskId;
 	}
 

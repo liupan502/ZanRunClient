@@ -419,7 +419,7 @@ public class SqlLiteProxy {
         return true;
     }
 
-    EmployeeTask getEmployeeTaskFromCursor(cursor){
+    EmployeeTask getEmployeeTaskFromCursor(Cursor cursor){
         EmployeeTask employeeTask = new EmployeeTask();
 
         int uidIndex = cursor.getColumnIndexOrThrow("uid");
@@ -466,7 +466,7 @@ public class SqlLiteProxy {
             for(int i=0;i<cursor.getCount();i++){
                 cursor.moveToPosition(i);
                 EmployeeTask employeeTask = getEmployeeTaskFromCursor(cursor);
-                result.add(procedureInfo);
+                result.add(employeeTask);
             }
         }
         db.close();
@@ -490,8 +490,8 @@ public class SqlLiteProxy {
     public boolean updateEmployeeTask(EmployeeTask et){
         if(!isAvailable())
             return false;
-        String sql = "update employee_task_table set cid = ?, ename = ?,eid = ?,
-        tid = ?, pid = ?,status = ?, pnum = ?, bpnum = ? where uid = ?";
+        String sql = "update employee_task_table set cid = ?, ename = ?,eid = ?,"+
+        "tid = ?, pid = ?,status = ?, pnum = ?, bpnum = ? where uid = ?";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{et.getCompanyId(),
             et.getEmployeeName(),

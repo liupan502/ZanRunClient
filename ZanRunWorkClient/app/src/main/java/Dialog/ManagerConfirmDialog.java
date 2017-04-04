@@ -1,5 +1,6 @@
 package Dialog;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.liupan.zanrunworkclient.R;
 
@@ -15,10 +17,11 @@ import com.example.liupan.zanrunworkclient.R;
  * Created by liupan on 2017/3/24.
  */
 
-public class ManagerComfirmDialog extends BaseConfirmDialog {
+public class ManagerConfirmDialog extends BaseConfirmDialog {
     private  Context context;
 
     private String employeeTaskId = null;
+
 
     private TextView badProNumText = null;
 
@@ -40,6 +43,7 @@ public class ManagerComfirmDialog extends BaseConfirmDialog {
     public ClickListenerInterFace clif = null;
 
     public interface  ClickListenerInterFace{
+
         public void DoConfirm(int proNum,int badProNum,String employeeTaskId,Dialog dialog);
 
         public void DoCancel(Dialog dialog);
@@ -61,7 +65,7 @@ public class ManagerComfirmDialog extends BaseConfirmDialog {
                     if(proNumText == null || badProNumText == null)
                         return;
                     int badProNum = Integer.parseInt(badProNumText.getText().toString());
-                    int proNum = Integer.parseInt(proNumText.getText().toString())
+                    int proNum = Integer.parseInt(proNumText.getText().toString());
                     clif.DoConfirm(proNum,badProNum,employeeTaskId,ManagerConfirmDialog.this);
                 }
             }
@@ -71,7 +75,7 @@ public class ManagerComfirmDialog extends BaseConfirmDialog {
             @Override
             public void onClick(View v) {
                 if(clif != null){
-                    clif.DoCancel();
+                    clif.DoCancel(ManagerConfirmDialog.this);
                 }
             }
         });

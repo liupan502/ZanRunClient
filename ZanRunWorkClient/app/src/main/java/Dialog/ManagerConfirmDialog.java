@@ -27,10 +27,13 @@ public class ManagerConfirmDialog extends BaseConfirmDialog {
 
     private TextView proNumText = null;
 
-    public ManagerConfirmDialog(Context context,String employeeTaskId) {
+    private Employee manager = null;
+
+    public ManagerConfirmDialog(Context context,String employeeTaskId,Employee manager) {
         super(context);
         this.context = context;
         this.employeeTaskId = employeeTaskId;
+        this.manager = manager;
     }
 
     @Override

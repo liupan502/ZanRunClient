@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<HashMap<String,Object>> employeeList = new ArrayList<HashMap<String, Object>>();
 
+    private ArrayList<EmployeeTask> employeeTasks = new ArrayList<EmployeeTask>();
+
     private enum Mode{
         MODE_DEFAULT,
         MODE_QC_CONFIRM,
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Task task = null;
 
+    private Procedure procedure = null;
 
     private ManagerConfirmDialog mcDialog = null;
 
@@ -61,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void processGetNewHuman(String humanId){
         SqlLiteProxy sqlLiteProxy =  SqlLiteProxy.getInstance();
+        if(!sqlLiteProxy.isAvailable())
+            sqlLiteProxy.start(dbHelper);
         Employee employee = sqlLiteProxy.findEmployee(humanId);
         int employeeLevel = employee.getEmployeeLevel();
         switch (employeeLevel){
@@ -78,10 +83,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void updateEmployeeList(){
+        employeeList.clear();
+        employeeList.add(new HashMap<String,Object>());
+        for(int i=0;i<employeeTasks.size();i++){
+            EmployeeTask task = employeeTasks.get(i);
+            HashMap<String,Object> map = new HashMap<String,Object>();
+            map.put(EmployeeSimpleAdapter.EMPLOYEE_NAME,task.getEmployeeName());
+            map.put(EmployeeSimpleAdapter.PRODUCTION_NUM,task.getProductionNum());
+            map.put(EmployeeSimpleAdapter.BAD_NUM,task.getBadProductionNum());
+            map.put(EmployeeSimpleAdapter.EMPLOYEE_ID,task.getId());
+            map.put(EmployeeSimpleAdapter.EMPLOYEE_STATUS,task.getStatus());
+            employeeList.add(0,map);
+        }
+    }
+
     private void processGetNewGeneralEmployee(Employee employee){
         if(currentMode != Mode.MODE_DEFAULT)
             return;
-        insertEmplpoyee(employee);
+        if(task == null || procedure == null)
+            return;
+        EmployeeTask employeeTask = new EmployeeTask(employee,task procedure);
+        SqlLiteProxy sqlLiteProxy =  SqlLiteProxy.getInstance();
+        if(!sqlLiteProxy.isAvailable())
+            sqlLiteProxy.start(dbHelper);
+        sqlLiteProxy.insertEmployeeTask(employeeTask);
+        employeeTasks.add(employeeTask);
+        updateEmployeeList();
     }
 
     private void processGetNewQC(Employee employee){
@@ -302,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
     private class ManagerConfirmProcess implements ManagerConfirmDialog.ClickListenerInterFace{
         public void DoConfirm(int proNum,int badProNum,String employeeTaskId,Dialog dialog){
             
-            for(int i=0;i<employeeList.size();i++){
+            /*for(int i=0;i<employeeList.size();i++){
                 HashMap<String,Object> map = (HashMap<String,Object>)employeeList.get(i);
                 if(map.get(EmployeeSimpleAdapter.EMPLOYEE_TASK_ID) != employeeTaskId)
                     continue;
@@ -311,8 +339,14 @@ public class MainActivity extends AppCompatActivity {
                 map.put(EmployeeSimpleAdapter.BAD_NUM,badProNum);
                 map.put(EmployeeSimpleAdapter.PRODUCTION_NUM,proNum);
                 break;
-            }
+            }*/
 
+            SqlLiteProxy sqlLiteProxy =  SqlLiteProxy.getInstance();
+            if(!sqlLiteProxy.isAvailable())
+                sqlLiteProxy.start(dbHelper);
+            EmployeeTask task = sqlLiteProxy.findEmployeeTask(employeeTaskId);
+            task.setStatus(EmployeeTask.ET_STATUS_MANAGER_CONFIRM);
+            task.setManagerId()
             if(dialog != null)
                 dialog.dismiss();
             MainActivity.this.mcDialog = null;

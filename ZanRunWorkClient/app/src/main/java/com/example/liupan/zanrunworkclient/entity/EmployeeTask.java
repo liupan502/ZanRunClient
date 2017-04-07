@@ -7,6 +7,7 @@ package com.example.liupan.zanrunworkclient.entity;
 import com.example.liupan.zanrunworkclient.entity.Employee;
 import com.example.liupan.zanrunworkclient.entity.Task;
 import com.example.liupan.zanrunworkclient.entity.Procedure;
+import java.util.UUID;
 
 
 public class EmployeeTask extends BaseObject {
@@ -39,6 +40,9 @@ public class EmployeeTask extends BaseObject {
 		this.setEmployeeId(employee.getId());
 		this.setProcedureId(procedure.getId());
 		this.setTaskId(task.getId());
+		String id =  UUID.randomUUID();
+		id.replace("-","");
+		this.setId();
 
 
 	}

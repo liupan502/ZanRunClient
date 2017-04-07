@@ -431,6 +431,8 @@ public class SqlLiteProxy {
         int productionNum = cursor.getColumnIndexOrThrow("pnum");
         int badProductionNum = cursor.getColumnIndexOrThrow("bpnum");
         int procedureIdIndex = cursor.getColumnIndexOrThrow("pid");
+        int managerIdIndex = cursor.getColumnIndexOrThrow("mid");
+        int qcIdindex = cursor.getColumnIndexOrThrow("qcid");
 
         String uid = cursor.getString(uidIndex);
         String cid = cursor.getString(cidIndex);
@@ -441,6 +443,8 @@ public class SqlLiteProxy {
         int status = cursor.getInt(statusIndex);
         int pnum = cursor.getInt(productionNum);
         int bpnum = cursor.getInt(badProductionNum);
+        String mid = cursor.getString(managerIdIndex);
+        String qcid = cursor.getString(qcIdindex);
 
 
         employeeTask.setId(uid);
@@ -452,6 +456,8 @@ public class SqlLiteProxy {
         employeeTask.setEmployeeId(eid);
         employeeTask.setTaskId(tid);
         employeeTask.setProcedureId(pid);
+        employeeTask.setManagerId(mid);
+        employeeTask.setQCId(qcid);
         
         return employeeTask;
     }
@@ -491,7 +497,7 @@ public class SqlLiteProxy {
         if(!isAvailable())
             return false;
         String sql = "update employee_task_table set cid = ?, ename = ?,eid = ?,"+
-        "tid = ?, pid = ?,status = ?, pnum = ?, bpnum = ? where uid = ?";
+        "tid = ?, pid = ?,status = ?, pnum = ?, bpnum = ? ,mid = ? ,qcid = ? where uid = ?";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{et.getCompanyId(),
             et.getEmployeeName(),
@@ -501,6 +507,8 @@ public class SqlLiteProxy {
             et.getStatus(),
             et.getProductionNum(),
             et.getBadProductionNum(),
+            et.getManagerId(),
+            et.getQCId(),
             et.getId()});
         db.close();
         return true;
@@ -519,7 +527,7 @@ public class SqlLiteProxy {
     public boolean insertEmployeeTask(EmployeeTask et){
         if(!isAvailable())
             return false;
-        String sql = "insert into employee_task_table (uid,cid,ename,eid,tid,pid,status,pnum,bpnum) values(?,?,?,?,?,?,?,?)";
+        String sql = "insert into employee_task_table (uid,cid,ename,eid,tid,pid,status,pnum,bpnum,mid,qcid) values(?,?,?,?,?,?,?,?,?,?)";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{et.getId(),
             et.getCompanyId(),
@@ -529,7 +537,9 @@ public class SqlLiteProxy {
             et.getProcedureId(),
             et.getStatus(),
             et.getProductionNum(),
-            et.getBadProductionNum()
+            et.getBadProductionNum(),
+            et.getManagerId(),
+            et.getQCId()
         });
         db.close();
         return true;

@@ -21,10 +21,13 @@ public class QCConfirmDialog extends BaseConfirmDialog {
     private  Context context;
 
     private String employeeTaskId = null;
-    public QCConfirmDialog(Context context,String employeeTaskId) {
+
+    private Employee qc = null;
+    public QCConfirmDialog(Context context,String employeeTaskId,Employee qc ) {
         super(context);
         this.context = context;
         this.employeeTaskId = employeeTaskId; 
+        this.qc = qc;
     }
 
     @Override
@@ -50,7 +53,7 @@ public class QCConfirmDialog extends BaseConfirmDialog {
             @Override
             public void onClick(View v) {
                 if(clif != null){
-                    clif.DoConfirm(employeeTaskId,QCConfirmDialog.this);
+                    clif.DoConfirm(employeeTaskId,QCConfirmDialog.this,qc);
                 }
             }
         });
@@ -72,7 +75,7 @@ public class QCConfirmDialog extends BaseConfirmDialog {
     }
 
     public interface  ClickListenerInterFace{
-        public void DoConfirm(String employeeTaskId,Dialog dialog);
+        public void DoConfirm(String employeeTaskId,Dialog dialog,Employee qc);
 
         public void DoCancel(Dialog dialog);
     }

@@ -328,25 +328,21 @@ public class MainActivity extends AppCompatActivity {
     public native String stringFromJNI();
 
     private class ManagerConfirmProcess implements ManagerConfirmDialog.ClickListenerInterFace{
-        public void DoConfirm(int proNum,int badProNum,String employeeTaskId,Dialog dialog){
+        public void DoConfirm(int proNum,int badProNum,String employeeTaskId,Dialog dialog,Employee manager){       
             
-            /*for(int i=0;i<employeeList.size();i++){
-                HashMap<String,Object> map = (HashMap<String,Object>)employeeList.get(i);
-                if(map.get(EmployeeSimpleAdapter.EMPLOYEE_TASK_ID) != employeeTaskId)
-                    continue;
-
-                map.put(EmployeeSimpleAdapter.EMPLOYEE_STATUS,EmployeeTask.ET_STATUS_MANAGER_CONFIRM);
-                map.put(EmployeeSimpleAdapter.BAD_NUM,badProNum);
-                map.put(EmployeeSimpleAdapter.PRODUCTION_NUM,proNum);
-                break;
-            }*/
-
-            SqlLiteProxy sqlLiteProxy =  SqlLiteProxy.getInstance();
-            if(!sqlLiteProxy.isAvailable())
-                sqlLiteProxy.start(dbHelper);
-            EmployeeTask task = sqlLiteProxy.findEmployeeTask(employeeTaskId);
-            task.setStatus(EmployeeTask.ET_STATUS_MANAGER_CONFIRM);
-            task.setManagerId()
+            for(int i=0;i<employeeTasks.size();i++){
+                if(employeeTasks.get(i).getId() == employeeTaskId){
+                    employeeTasks.get(i).setStatus(EmployeeTask.ET_STATUS_MANAGER_CONFIRM);
+                    employeeTasks.get(i).setManagerId(manager.getId());
+                    SqlLiteProxy sqlLiteProxy =  SqlLiteProxy.getInstance();
+                    if(!sqlLiteProxy.isAvailable())
+                        sqlLiteProxy.start(dbHelper);
+                    sqlLiteProxy.updateEmployeeTask(employeeTasks.get(i));
+                    updateEmployeeList();
+                    break;
+                }                
+            }
+            
             if(dialog != null)
                 dialog.dismiss();
             MainActivity.this.mcDialog = null;
@@ -362,16 +358,21 @@ public class MainActivity extends AppCompatActivity {
     } 
 
     private class QCConfirmProcess implements QCConfirmDialog.ClickListenerInterFace{
-        public void DoConfirm(String employeeTaskId,Dialog dialog){
+        public void DoConfirm(String employeeTaskId,Dialog dialog,Employee qc){
             
-            for(int i=0;i<employeeList.size();i++){
-                HashMap<String,Object> map = (HashMap<String,Object>)employeeList.get(i);
-                if(map.get(EmployeeSimpleAdapter.EMPLOYEE_TASK_ID) != employeeTaskId)
-                    continue;
-
-                map.put(EmployeeSimpleAdapter.EMPLOYEE_STATUS,EmployeeTask.ET_STATUS_QC_CONFIRM);
-                break;
+            for(int i=0;i<employeeTasks.size();i++){
+                if(employeeTasks.get(i).getId() == employeeTaskId){
+                    employeeTasks.get(i).setStatus(EmployeeTask.ET_STATUS_QC_CONFIRM);
+                    employeeTasks.get(i).setManagerId(qc.getId());
+                    SqlLiteProxy sqlLiteProxy =  SqlLiteProxy.getInstance();
+                    if(!sqlLiteProxy.isAvailable())
+                        sqlLiteProxy.start(dbHelper);
+                    sqlLiteProxy.updateEmployeeTask(employeeTasks.get(i));
+                    updateEmployeeList();
+                    break;
+                }                
             }
+            
             if(dialog != null)
                 dialog.dismiss();
             MainActivity.this.qcDialog = null;

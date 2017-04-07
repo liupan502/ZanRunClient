@@ -47,7 +47,7 @@ public class ManagerConfirmDialog extends BaseConfirmDialog {
 
     public interface  ClickListenerInterFace{
 
-        public void DoConfirm(int proNum,int badProNum,String employeeTaskId,Dialog dialog);
+        public void DoConfirm(int proNum,int badProNum,String employeeTaskId,Dialog dialog,Employee manager);
 
         public void DoCancel(Dialog dialog);
     }
@@ -69,7 +69,7 @@ public class ManagerConfirmDialog extends BaseConfirmDialog {
                         return;
                     int badProNum = Integer.parseInt(badProNumText.getText().toString());
                     int proNum = Integer.parseInt(proNumText.getText().toString());
-                    clif.DoConfirm(proNum,badProNum,employeeTaskId,ManagerConfirmDialog.this);
+                    clif.DoConfirm(proNum,badProNum,employeeTaskId,ManagerConfirmDialog.this,manager);
                 }
             }
         });

@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.liupan.zanrunworkclient.R;
+import com.example.liupan.zanrunworkclient.entity.Employee;
 
 /**
  * Created by liupan on 2017/3/24.
@@ -30,9 +31,10 @@ public class SettingConfirmDialog extends BaseConfirmDialog {
     }
 
     @Override
-    public void SetConfirmButtonStatus(int status) {
+    public void SetConfirmButtonStatus(int status, Employee employee) {
         boolean enanbled = status == 0?false:true;
         Button ensureButton = (Button) findViewById(R.id.SettingEnsureButton);
+        this.employee = employee;
         ensureButton.setEnabled(enanbled);
     }
 

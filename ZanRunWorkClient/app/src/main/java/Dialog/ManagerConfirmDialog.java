@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.liupan.zanrunworkclient.R;
+import com.example.liupan.zanrunworkclient.entity.Employee;
 
 /**
  * Created by liupan on 2017/3/24.
@@ -27,19 +28,20 @@ public class ManagerConfirmDialog extends BaseConfirmDialog {
 
     private TextView proNumText = null;
 
-    private Employee manager = null;
+    //private Employee manager = null;
 
-    public ManagerConfirmDialog(Context context,String employeeTaskId,Employee manager) {
+    public ManagerConfirmDialog(Context context,String employeeTaskId) {
         super(context);
         this.context = context;
         this.employeeTaskId = employeeTaskId;
-        this.manager = manager;
+
     }
 
     @Override
-    public void SetConfirmButtonStatus(int status) {
+    public void SetConfirmButtonStatus(int status, Employee employee) {
         boolean enanbled = status == 0?false:true;
         Button ensureButton = (Button) findViewById(R.id.ManagerEnsureButton);
+        this.employee = employee;
         ensureButton.setEnabled(enanbled);
     }
 
@@ -69,7 +71,7 @@ public class ManagerConfirmDialog extends BaseConfirmDialog {
                         return;
                     int badProNum = Integer.parseInt(badProNumText.getText().toString());
                     int proNum = Integer.parseInt(proNumText.getText().toString());
-                    clif.DoConfirm(proNum,badProNum,employeeTaskId,ManagerConfirmDialog.this,manager);
+                    clif.DoConfirm(proNum,badProNum,employeeTaskId,ManagerConfirmDialog.this,employee);
                 }
             }
         });

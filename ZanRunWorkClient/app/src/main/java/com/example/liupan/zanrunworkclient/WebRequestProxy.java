@@ -5,6 +5,8 @@ import com.example.liupan.zanrunworkclient.entity.FlowCard;
 import com.example.liupan.zanrunworkclient.entity.Procedure;
 import com.example.liupan.zanrunworkclient.entity.ProcedureInfo;
 import com.example.liupan.zanrunworkclient.EntityJsonExample;
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 import org.json.JSONObject;
 
@@ -95,27 +97,36 @@ public class WebRequestProxy {
 
         }
         return employees;*/
-        JSONObject jsonObject = new JSONObject(jsonStr);
-        int code = jsonObject.getInt(CODE);
-        JSONArray data = jsonObject.getArray(DATA);
+        //JSONObject jsonOn = new JSONObject();
         ArrayList<Employee> result = new ArrayList<Employee>();
-        for(int i=0;i<data.length();i++){
-            Employee ep = new Employee();
-            JSONObject employeeJsonObject = data.getJsonObject(i);
-            String id = employeeJsonObject.getString(ID);
-            String companyId = employeeJsonObject.getString(COMPANY_ID);
-            String no = employeeJsonObject.getString(EMPLOYEE_NO);
-            int level = employeeJsonObject.getInt(EMPLOYEE_LEVEL);
-            String name = employeeJsonObject.getString(EMPLOYEE_NAME);
+        try{
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            int code = jsonObject.getInt(CODE);
+            JSONArray data = jsonObject.getJSONArray(DATA);
 
-            ep.setId(id);
-            ep.setCompanyId(companyId);
-            ep.setEmployeeNo(no);
-            ep.setEmployeeLevel(level);
-            ep.setName(name);
+            for(int i=0;i<data.length();i++){
+                Employee ep = new Employee();
+                JSONObject employeeJsonObject = data.getJSONObject(i);
+                String id = employeeJsonObject.getString(ID);
+                String companyId = employeeJsonObject.getString(COMPANY_ID);
+                String no = employeeJsonObject.getString(EMPLOYEE_NO);
+                int level = employeeJsonObject.getInt(EMPLOYEE_LEVEL);
+                String name = employeeJsonObject.getString(EMPLOYEE_NAME);
 
-            result.add(ep);
+                ep.setId(id);
+                ep.setCompanyId(companyId);
+                ep.setEmployeeNo(no);
+                ep.setEmployeeLevel(level);
+                ep.setName(name);
+
+                result.add(ep);
+            }
         }
+        catch(Exception e){
+
+        }
+
+
         return result;
     }
 
@@ -124,8 +135,8 @@ public class WebRequestProxy {
     }
 
     private ArrayList<Employee> getEmployeesFromServer(){
-        //String jsonStr;
-        
+        String jsonStr = "";
+        ArrayList<Employee> result = getEmployeesFromString(jsonStr);
         return result;
     }
 
@@ -145,28 +156,34 @@ public class WebRequestProxy {
         }
         return procedures;
         */
-
-        JSONObject jsonObject = new JSONObject(jsonStr);
-        int code = jsonObject.getInt(CODE);
-        JSONArray data = jsonObject.getArray(DATA);
         ArrayList<Procedure> result = new ArrayList<Procedure>();
-        for(int i=0;i<data.length();i++){
-            Procedure pd = new Procedure();
-            JSONObject procedureJsonObject = data.getJsonObject(i);
-            String id = procedureJsonObject.getString(ID);
-            String companyId = procedureJsonObject.getString(COMPANY_ID);
-            String no = procedureJsonObject.getString(PROCEDURE_NO);
-            //int level = procedureJsonObject.getInt(PROCEDURE_NAME);
-            String name = procedureJsonObject.getString(PROCEDURE_NAME);
+        try{
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            int code = jsonObject.getInt(CODE);
+            JSONArray data = jsonObject.getJSONArray(DATA);
 
-            pd.setId(id);
-            pd.setCompanyId(companyId);
-            pd.setProcedureNo(no);
-            //pd.setEmployeeLevel(level);
-            pd.setProcedureName(name);
+            for(int i=0;i<data.length();i++){
+                Procedure pd = new Procedure();
+                JSONObject procedureJsonObject = data.getJSONObject(i);
+                String id = procedureJsonObject.getString(ID);
+                String companyId = procedureJsonObject.getString(COMPANY_ID);
+                String no = procedureJsonObject.getString(PROCEDURE_NO);
+                //int level = procedureJsonObject.getInt(PROCEDURE_NAME);
+                String name = procedureJsonObject.getString(PROCEDURE_NAME);
 
-            result.add(ep);
+                pd.setId(id);
+                pd.setCompanyId(companyId);
+                pd.setProcedureNo(no);
+                //pd.setEmployeeLevel(level);
+                pd.setProcedureName(name);
+
+                result.add(pd);
+            }
         }
+        catch(Exception e){
+
+        }
+
         return result;
 
         
@@ -198,54 +215,62 @@ public class WebRequestProxy {
         return flowCards;
         */
 
-        JSONObject jsonObject = new JSONObject(jsonStr);
-        int code = jsonObject.getInt(CODE);
-        JSONArray data = jsonObject.getArray(DATA);
         ArrayList<FlowCard> result = new ArrayList<FlowCard>();
-        for(int i=0;i<data.length();i++){
-            FlowCard fc = new FlowCard();
-            JSONObject flowcardJsonObject = data.getJsonObject(i);
-            String id = flowcardJsonObject.getString(ID);
-            String companyId = flowcardJsonObject.getString(COMPANY_ID);
-            String no = flowcardJsonObject.getString(FLOWCARD_NO);
-            String productionName = flowcardJsonObject.getInt(FLOWCARD_PRODUCTION_NAME);
-            String productionNo = flowcardJsonObject.getString(FLOWCARD_PRODUCTION_NO);
-            String termianlDate = flowcardJsonObject.getString(FLOWCARD_TERMINAL_DATE);
-            int  orderNum = flowcardJsonObject.getString(FLOWCARD_ORDER_NUM);
-            int mantiNum = flowcardJsonObject.getInt(FLOWCARD_MANTI_NUM);
-            JSONArray procedureInfoArray = flowcardJsonObject.getArray(FLOWCARD_PROCEDURE_INFOS);
+        try{
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            int code = jsonObject.getInt(CODE);
+            JSONArray data = jsonObject.getJSONArray(DATA);
 
-            fc.setId(id);
-            fc.setCompanyId(companyId);
-            fc.setCardNo(no);
-            fc.setProductionName(productionName);
-            fc.setProductionNo(productionNo);
-            fc.setTerminalDate(termianlDate);
-            fc.setOrderNum(orderNum);
-            fc.setMantiNum(mantiNum);
-            ArrayList<ProcedureInfo> procedureInfos = new ArrayList<ProcedureInfo>();
-            for(int j=0;j<procedureInfoArray.length();j++){
-                ProcedureInfo pi = new ProcedureInfo();
-                JSONObject procedureJsonObject = procedureInfoArray.getJsonObject(j);
-                String procedureId = procedureJsonObject.getString(ID);
-                String procedureCompanyId = procedureJsonObject.getString(COMPANY_ID);
-                String request = procedureJsonObject.getString(PROCEDURE_INFO_REQUEST);
-                int num = procedureJsonObject.getInt(PROCEDURE_INFO_NUM);
-                int status = procedureJsonObject.getInt(PROCEDURE_INFO_QC_CONFIRM_STATUS);
+            for(int i=0;i<data.length();i++){
+                FlowCard fc = new FlowCard();
+                JSONObject flowcardJsonObject = data.getJSONObject(i);
+                String id = flowcardJsonObject.getString(ID);
+                String companyId = flowcardJsonObject.getString(COMPANY_ID);
+                String no = flowcardJsonObject.getString(FLOWCARD_NO);
+                String productionName = flowcardJsonObject.getString(FLOWCARD_PRODUCTION_NAME);
+                String productionNo = flowcardJsonObject.getString(FLOWCARD_PRODUCTION_NO);
+                String termianlDate = flowcardJsonObject.getString(FLOWCARD_TERMINAL_DATE);
+                int  orderNum = flowcardJsonObject.getInt(FLOWCARD_ORDER_NUM);
+                int mantiNum = flowcardJsonObject.getInt(FLOWCARD_MANTI_NUM);
+                JSONArray procedureInfoArray = flowcardJsonObject.getJSONArray(FLOWCARD_PROCEDURE_INFOS);
 
-                pi.setId(procedureId);
-                pi.setCompanyId(procedureCompanyId);
-                pi.setProcedureRequest(request);
-                pi.setQcConfirmStatus(status);
-                pi.setFlowCardNo(fc.getId());
-                pi.setNum(num);
-                procedureInfos.add(pi);
+                fc.setId(id);
+                fc.setCompanyId(companyId);
+                fc.setCardNo(no);
+                fc.setProductionName(productionName);
+                fc.setProductionNo(productionNo);
+                fc.setTerminalDate(termianlDate);
+                fc.setOrderNum(orderNum);
+                fc.setMantiNum(mantiNum);
+                ArrayList<ProcedureInfo> procedureInfos = new ArrayList<ProcedureInfo>();
+                for(int j=0;j<procedureInfoArray.length();j++){
+                    ProcedureInfo pi = new ProcedureInfo();
+                    JSONObject procedureJsonObject = procedureInfoArray.getJSONObject(j);
+                    String procedureId = procedureJsonObject.getString(ID);
+                    String procedureCompanyId = procedureJsonObject.getString(COMPANY_ID);
+                    String request = procedureJsonObject.getString(PROCEDURE_INFO_REQUEST);
+                    int num = procedureJsonObject.getInt(PROCEDURE_INFO_NUM);
+                    int status = procedureJsonObject.getInt(PROCEDURE_INFO_QC_CONFIRM_STATUS);
+
+                    pi.setId(procedureId);
+                    pi.setCompanyId(procedureCompanyId);
+                    pi.setProcedureRequest(request);
+                    pi.setQcConfirmStatus(status);
+                    pi.setFlowCardNo(fc.getId());
+                    pi.setNum(num);
+                    procedureInfos.add(pi);
+                }
+                fc.setProcedureInfos(procedureInfos);
+                //fc.setName(name);
+
+                result.add(fc);
             }
-            fc.setProcedureInfos(procedureInfos);
-            fc.setName(name);
-
-            result.add(ep);
         }
+        catch(Exception e){
+
+        }
+
+
         return result;
 
     }

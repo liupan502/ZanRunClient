@@ -40,9 +40,9 @@ public class EmployeeTask extends BaseObject {
 		this.setEmployeeId(employee.getId());
 		this.setProcedureId(procedure.getId());
 		this.setTaskId(task.getId());
-		String id =  UUID.randomUUID();
+		String id =  UUID.randomUUID().toString();
 		id.replace("-","");
-		this.setId();
+		this.setId(id);
 
 
 	}

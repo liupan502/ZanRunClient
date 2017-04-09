@@ -11,9 +11,11 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.ListView;
@@ -36,7 +38,7 @@ import com.example.liupan.zanrunworkclient.entity.*;
 import Dialog.QCConfirmDialog;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ArrayList<HashMap<String,Object>> employeeList = new ArrayList<HashMap<String, Object>>();
 
@@ -61,6 +63,12 @@ public class MainActivity extends AppCompatActivity {
     private SettingConfirmDialog scDialog = null;
 
     private ZanRunDBHelper dbHelper = null;
+
+    private Button settingButton = null;
+
+    private Button refreshButton = null;
+
+    private boolean is_refreshing = false;
 
     private void processGetNewHuman(String humanId){
         SqlLiteProxy sqlLiteProxy =  SqlLiteProxy.getInstance();
@@ -103,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         if(task == null || procedure == null)
             return;
-        EmployeeTask employeeTask = new EmployeeTask(employee,task procedure);
+        EmployeeTask employeeTask = new EmployeeTask(employee,task, procedure);
         SqlLiteProxy sqlLiteProxy =  SqlLiteProxy.getInstance();
         if(!sqlLiteProxy.isAvailable())
             sqlLiteProxy.start(dbHelper);
@@ -118,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         String id = employee.getId();
         if(qcDialog == null)
             return;
-        qcDialog.SetConfirmButtonStatus(1);
+        qcDialog.SetConfirmButtonStatus(1,employee);
     }
 
     private void processGetNewManager(Employee employee){
@@ -127,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         String id = employee.getId();
         if(mcDialog == null)
             return;
-        mcDialog.SetConfirmButtonStatus(1);
+        mcDialog.SetConfirmButtonStatus(1,employee);
     }
 
     private void processGetNewTask(String taskId){
@@ -192,10 +200,41 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private void onSettingButtonClick(){
+        if(settingButton == null)
+            return;
+        scDialog = new SettingConfirmDialog((Context)MainActivity.this);
+        scDialog.show();
+    }
+
+    private void onRefreshButtonClick(){
+        if(refreshButton == null)
+            return;
+        refreshButton.setEnabled(false);
+    }
+    @Override
+    public void onClick(View view){
+        if(view == null)
+            return;
+        if(view == refreshButton)
+            onRefreshButtonClick();
+        else if(view == settingButton)
+            onSettingButtonClick();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolBar = (Toolbar) findViewById(R.id.main_activity_toolbar);
+        setTitle("this is a title");
+        setSupportActionBar(toolBar);
+        toolBar.setTitle("this is a tool bar");
+        settingButton = (Button)findViewById(R.id.toolbar_setting_button);
+        settingButton.setOnClickListener(this);
+        refreshButton = (Button)findViewById(R.id.toolbar_refresh_button);
+        refreshButton.setOnClickListener(this);
 
         dbHelper = new ZanRunDBHelper((Context) this);
 
@@ -221,8 +260,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         PortListener portListener = new PortListener();
-        Thread thread = new Thread(portListener);
-        thread.start();
+        //Thread thread = new Thread(portListener);
+        //thread.start();
     }
 
     protected void getData(){

@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import com.example.liupan.zanrunworkclient.R;
+import com.example.liupan.zanrunworkclient.entity.Employee;
 
 /**
  * Created by liupan on 2017/3/24.
@@ -22,19 +23,20 @@ public class QCConfirmDialog extends BaseConfirmDialog {
 
     private String employeeTaskId = null;
 
-    private Employee qc = null;
-    public QCConfirmDialog(Context context,String employeeTaskId,Employee qc ) {
+    //private Employee qc = null;
+    public QCConfirmDialog(Context context,String employeeTaskId ) {
         super(context);
         this.context = context;
         this.employeeTaskId = employeeTaskId; 
-        this.qc = qc;
+
     }
 
     @Override
-    public void SetConfirmButtonStatus(int status) {
+    public void SetConfirmButtonStatus(int status,Employee employee) {
 
         boolean enanbled = status == 0?false:true;
         Button ensureButton = (Button) findViewById(R.id.QCEnsureButton);
+        this.employee = employee;
         ensureButton.setEnabled(enanbled);
     }
 
@@ -53,7 +55,7 @@ public class QCConfirmDialog extends BaseConfirmDialog {
             @Override
             public void onClick(View v) {
                 if(clif != null){
-                    clif.DoConfirm(employeeTaskId,QCConfirmDialog.this,qc);
+                    clif.DoConfirm(employeeTaskId,QCConfirmDialog.this,employee);
                 }
             }
         });

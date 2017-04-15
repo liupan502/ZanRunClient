@@ -41,6 +41,16 @@ public class FlowCard extends BaseObject {
       // 涉及工序
       private ArrayList<ProcedureInfo> procedureInfos;
 
+    public String getRfid() {
+        return rfid;
+    }
+
+    public void setRfid(String rfid) {
+        this.rfid = rfid;
+    }
+
+    private String rfid;
+
     public String getCardNo() {
         return cardNo;
     }

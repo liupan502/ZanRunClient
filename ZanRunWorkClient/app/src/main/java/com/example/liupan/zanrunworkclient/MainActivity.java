@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         if(task == null || procedure == null)
             return;
-        EmployeeTask employeeTask = new EmployeeTask(employee,task, procedure);
+        EmployeeTask employeeTask = new EmployeeTask(employee,null, procedure);
         SqlLiteProxy sqlLiteProxy =  SqlLiteProxy.getInstance();
         if(!sqlLiteProxy.isAvailable())
             sqlLiteProxy.start(dbHelper);
@@ -260,8 +260,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         PortListener portListener = new PortListener();
-        Thread thread = new Thread(portListener);
-        thread.start();
+        //Thread thread = new Thread(portListener);
+        //thread.start();
+
+        updateData();
     }
 
     protected void getData(){
@@ -444,15 +446,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void updateData(){
-        uploadLocalData();
-        pullServerData();
+
+        Thread thread=new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                uploadLocalData();
+                pullServerData();
+            }
+        });
+        thread.start();
+
+    }
+
+    private static String fcIds[] = {"1873e443-21a0-11e7-9c4c-68f728df42b8","18798792-21a0-11e7-9c4c-68f728df42b8"};
+    private static String employeeIds[] = {"12bb54af-21a0-11e7-9c4c-68f728df42b8","12bb5967-21a0-11e7-9c4c-68f728df42b8"};
+    private static String procedureIds[] = {"748b6b04-21a6-11e7-9c4c-68f728df42b8","748b71a6-21a6-11e7-9c4c-68f728df42b8"};
+    private ArrayList<EmployeeTask> createTestTask(int taskNum){
+        ArrayList<EmployeeTask> tasks = new ArrayList<EmployeeTask>();
+        for(int i=0;i < taskNum;i++){
+            EmployeeTask task = new EmployeeTask();
+            task.setStartTime("2017-01-01 12:00:00");
+            task.setUpdateTime("2017-01-01 16:00:00");
+            task.setStatus(0);
+            task.setCompanyId("comId"+i);
+            task.setBadProductionNum(0);
+            task.setEmployeeId(employeeIds[i]);
+            task.setEmployeeName("employName" + i);
+            task.setFcId(fcIds[i]);
+            task.setProcedureId(procedureIds[i]);
+            task.setProductionNum(i);
+            tasks.add(task);
+        }
+        return tasks;
     }
 
     private void uploadLocalData(){
-
+        WebRequestProxy.server_ip = "192.168.0.121";
+        WebRequestProxy.server_port = 8080;
+        ArrayList<EmployeeTask > tasks = createTestTask(2);
+        WebRequestProxy wrp = WebRequestProxy.getInstance();
+        wrp.submitTasks(tasks);
     }
 
     private void pullServerData(){
-        
+
+        WebRequestProxy.server_ip = "192.168.0.121";
+        WebRequestProxy.server_port = 8080;
+        WebRequestProxy wrp = WebRequestProxy.getInstance();
+
+        //ArrayList<Employee> employees = wrp.getEmployees();
+
+        //ArrayList<FlowCard> flowCards = wrp.getFlowCards();
+
+        //ArrayList<Procedure> procedures = wrp.getProcedures();
     }
 }

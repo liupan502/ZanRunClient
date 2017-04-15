@@ -22,6 +22,18 @@ public class ProcedureInfo extends BaseObject {
     // 加工数量
     private  int num;
 
+    private String procedureNo;
+
+    public String getProcedureNo() {
+        return procedureNo;
+    }
+
+    public void setProcedureNo(String procedureNo) {
+        this.procedureNo = procedureNo;
+    }
+
+
+
     public String getFlowCardNo() {
         return flowCardNo;
     }

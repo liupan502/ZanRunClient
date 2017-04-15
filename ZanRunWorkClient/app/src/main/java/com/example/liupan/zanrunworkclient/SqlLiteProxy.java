@@ -454,7 +454,7 @@ public class SqlLiteProxy {
         employeeTask.setStatus(status);
         employeeTask.setEmployeeName(ename);
         employeeTask.setEmployeeId(eid);
-        employeeTask.setTaskId(tid);
+        employeeTask.setFcId(tid);
         employeeTask.setProcedureId(pid);
         employeeTask.setManagerId(mid);
         employeeTask.setQCId(qcid);
@@ -502,7 +502,7 @@ public class SqlLiteProxy {
         db.execSQL(sql,new Object[]{et.getCompanyId(),
             et.getEmployeeName(),
             et.getEmployeeId(),
-            et.getTaskId(),
+            et.getFcId(),
             et.getProcedureId(),
             et.getStatus(),
             et.getProductionNum(),
@@ -533,7 +533,7 @@ public class SqlLiteProxy {
             et.getCompanyId(),
             et.getEmployeeName(),
             et.getEmployeeId(),
-            et.getTaskId(),
+            et.getFcId(),
             et.getProcedureId(),
             et.getStatus(),
             et.getProductionNum(),

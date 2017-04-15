@@ -30,6 +30,16 @@ public class Employee extends BaseObject {
     // 雇员姓名
     private String name;
 
+    public String getRfid() {
+        return rfid;
+    }
+
+    public void setRfid(String rfid) {
+        this.rfid = rfid;
+    }
+
+    private String rfid;
+
     public String getName() {
         return name;
     }

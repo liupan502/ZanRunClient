@@ -13,7 +13,7 @@ import java.util.UUID;
 public class EmployeeTask extends BaseObject {
 
 	private String employeeId;
-	private String taskId;
+	private String fcId;
 	private String procedureId;
 	private String employeeName;
 	private int productionNum;
@@ -21,6 +21,25 @@ public class EmployeeTask extends BaseObject {
 	private int status;
 	private String qcId;
 	private String managerId;
+
+	public String getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+
+	public String getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	private String startTime;
+	private String updateTime;
 
 	//public static final int ET_STATUS_NONE = 0;
 	public static final int ET_STATUS_DEFAULT = 1;
@@ -31,7 +50,7 @@ public class EmployeeTask extends BaseObject {
 		super();
 	}
 
-	public EmployeeTask(Employee employee,Task task,Procedure procedure){
+	public EmployeeTask(Employee employee,FlowCard fc,Procedure procedure){
 		super();
 		status = ET_STATUS_DEFAULT;
 		this.setProductionNum(0);
@@ -39,7 +58,7 @@ public class EmployeeTask extends BaseObject {
 		this.setEmployeeName(employee.getName());
 		this.setEmployeeId(employee.getId());
 		this.setProcedureId(procedure.getId());
-		this.setTaskId(task.getId());
+		this.setFcId(fc.getId());
 		String id =  UUID.randomUUID().toString();
 		id.replace("-","");
 		this.setId(id);
@@ -87,12 +106,12 @@ public class EmployeeTask extends BaseObject {
 		this.employeeId = employeeId;
 	}
 
-	public String getTaskId(){
-		return taskId;
+	public String getFcId(){
+		return fcId;
 	}
 
-	public void setTaskId(String taskId){
-		this.taskId = taskId;
+	public void setFcId(String fcId){
+		this.fcId = fcId;
 	}
 
 	public int getStatus(){

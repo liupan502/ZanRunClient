@@ -260,10 +260,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         PortListener portListener = new PortListener();
-        //Thread thread = new Thread(portListener);
-        //thread.start();
+        Thread thread = new Thread(portListener);
+        thread.start();
 
-        updateData();
+        //updateData();
     }
 
     protected void getData(){

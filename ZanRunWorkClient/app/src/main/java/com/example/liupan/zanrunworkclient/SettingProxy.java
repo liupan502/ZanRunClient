@@ -4,6 +4,7 @@ import android.location.SettingInjectorService;
 
 import com.example.liupan.zanrunworkclient.entity.Procedure;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,14 +42,12 @@ public class SettingProxy {
         String result = "";
 
         try{
-            InputStream is = SettingProxy.class.getClassLoader().getResourceAsStream(SETTING_FILE_PATH);
-            Properties properties = new Properties();
-            properties.load(is);
-            result = properties.getProperty(key);
-            is.close();
+            String tmp = System.getProperty(key);
+            if(tmp != null)
+                result = tmp;
         }
         catch (Exception e){
-
+            e.printStackTrace();
         }
         finally {
 
@@ -58,17 +57,10 @@ public class SettingProxy {
 
     private void setSetting(String key, String value){
         try{
-            InputStream is = SettingProxy.class.getClassLoader().getResourceAsStream(SETTING_FILE_PATH);
-            Properties properties = new Properties();
-            properties.load(is);
-            is.close();
-            properties.setProperty(key,value);
-            FileOutputStream os = new FileOutputStream(SETTING_FILE_PATH) ;
-            properties.store(os,null);
-            os.close();
+            System.setProperty(key,value);
         }
         catch(Exception e){
-
+            e.printStackTrace();
         }
         finally {
 

@@ -461,12 +461,12 @@ public class SqlLiteProxy {
         
         return employeeTask;
     }
-    public ArrayList<EmployeeTask> employeeTasks(){
+    public ArrayList<EmployeeTask> employeeTasks(String flowCardId){
         if(!isAvailable())
             return null;
-        String sql = "select * from employee_task_table ";
+        String sql = "select * from employee_task_table where fid = ?";
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(sql,new String[]{});
+        Cursor cursor = db.rawQuery(sql,new String[]{flowCardId});
         ArrayList<EmployeeTask> result = new ArrayList<EmployeeTask>();
         if(cursor.moveToFirst()){
             for(int i=0;i<cursor.getCount();i++){
@@ -497,7 +497,7 @@ public class SqlLiteProxy {
         if(!isAvailable())
             return false;
         String sql = "update employee_task_table set cid = ?, ename = ?,eid = ?,"+
-        "tid = ?, pid = ?,status = ?, pnum = ?, bpnum = ? ,mid = ? ,qcid = ? where uid = ?";
+        "fid = ?, pid = ?,status = ?, pnum = ?, bpnum = ? ,mid = ? ,qcid = ? where uid = ?";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{et.getCompanyId(),
             et.getEmployeeName(),
@@ -527,7 +527,7 @@ public class SqlLiteProxy {
     public boolean insertEmployeeTask(EmployeeTask et){
         if(!isAvailable())
             return false;
-        String sql = "insert into employee_task_table (uid,cid,ename,eid,tid,pid,status,pnum,bpnum,mid,qcid) values(?,?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into employee_task_table (uid,cid,ename,eid,fid,pid,status,pnum,bpnum,mid,qcid) values(?,?,?,?,?,?,?,?,?,?)";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{et.getId(),
             et.getCompanyId(),

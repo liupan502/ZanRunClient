@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -26,6 +27,7 @@ import com.example.liupan.zanrunworkclient.ConfirmDialog.*;
 import Dialog.*;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +38,7 @@ import com.example.liupan.zanrunworkclient.EmployeeSimpleAdapter;
 import com.example.liupan.zanrunworkclient.entity.*;
 
 import Dialog.QCConfirmDialog;
+import Test.SettingTest;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -52,7 +55,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private  Mode currentMode = Mode.MODE_DEFAULT;
 
-    private Task task = null;
+    //private Task task = null;
+
+    private FlowCard flowCard = null;
 
     private Procedure procedure = null;
 
@@ -69,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button refreshButton = null;
 
     private boolean is_refreshing = false;
+
+    EmployeeSimpleAdapter simpleAdapter = null;
 
     private void processGetNewHuman(String humanId){
         SqlLiteProxy sqlLiteProxy =  SqlLiteProxy.getInstance();
@@ -104,12 +111,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             map.put(EmployeeSimpleAdapter.EMPLOYEE_STATUS,task.getStatus());
             employeeList.add(0,map);
         }
+        refreshEmployeeTaskList();
     }
 
     private void processGetNewGeneralEmployee(Employee employee){
         if(currentMode != Mode.MODE_DEFAULT)
             return;
-        if(task == null || procedure == null)
+        if(procedure == null)
             return;
         EmployeeTask employeeTask = new EmployeeTask(employee,null, procedure);
         SqlLiteProxy sqlLiteProxy =  SqlLiteProxy.getInstance();
@@ -141,16 +149,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void processGetNewTask(String taskId){
         if(currentMode != Mode.MODE_DEFAULT)
             return;
-        saveCurrentTask();
-        changeToTask(taskId);
+        FlowCard flowCard = findFlowCard(taskId);
+        if(flowCard != null){
+            saveCurrentTask();
+            changeToTask(flowCard);
+        }
+
+    }
+
+    private FlowCard findFlowCard(String flowCardId){
+        SqlLiteProxy sqlLiteProxy = SqlLiteProxy.getInstance();
+        if(!sqlLiteProxy.isAvailable()){
+            sqlLiteProxy.start(dbHelper);
+        }
+        FlowCard flowCard = sqlLiteProxy.findFlowCard(flowCardId);
+        return flowCard;
     }
 
     private void saveCurrentTask(){
 
     }
 
-    private void changeToTask(String taskId){
+    private void changeToTask(FlowCard newFlowCard){
+        if(newFlowCard == null)
+            return;
+        flowCard = newFlowCard;
+        SqlLiteProxy sqlLiteProxy = SqlLiteProxy.getInstance();
+        if(!sqlLiteProxy.isAvailable()){
+            sqlLiteProxy.start(dbHelper);
+        }
+        ArrayList<EmployeeTask> tmpEmployeeLists = sqlLiteProxy.employeeTasks(flowCard.getId());
+        if(tmpEmployeeLists != null){
+            employeeTasks = tmpEmployeeLists;
+            updateEmployeeList();
+        }
 
+        //employeeTasks = sqlLiteProxy
+    }
+
+    private void refreshEmployeeTaskList(){
+        if(simpleAdapter != null){
+            simpleAdapter.notifyDataSetChanged();
+        }
     }
 
     private void processListenNewHuman(String id){
@@ -245,8 +285,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ListView listView = (ListView) findViewById(R.id.employees_list);
         String[] strs = {"employee_name","production_num","bad_num"};
         int[] ids = {R.id.employee_name,R.id.production_num,R.id.bad_num};
-        getData();
-        EmployeeSimpleAdapter simpleAdapter = new EmployeeSimpleAdapter(this,employeeList,R.layout.employee_list_item,strs,ids);
+
+
+        int num = 3;
+        getData(num);
+        simpleAdapter = new EmployeeSimpleAdapter(this,employeeList,R.layout.employee_list_item,strs,ids);
         //SimpleAdapter simpleAdapter = new SimpleAdapter(this,employeeList,R.layout.employee_list_item,strs,ids);
         listView.setAdapter(simpleAdapter);
         listView.setOnItemClickListener(new EmployeeItemClickListener());
@@ -259,16 +302,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bindService(bindIntent, connection, BIND_AUTO_CREATE);
 
 
-        PortListener portListener = new PortListener();
-        Thread thread = new Thread(portListener);
-        thread.start();
+        //PortListener portListener = new PortListener();
+        //Thread thread = new Thread(portListener);
+        //thread.start();
 
         //updateData();
+
+
+        //SettingTest.settingTest("abcd","dcba");
+
     }
 
-    protected void getData(){
+    protected void getData(int num){
         //ArrayList<HashMap<String,Object>> data = new ArrayList<HashMap<String,Object>>();
-        int num = 3;
+        //int num = 3;
         for(int i=0;i<num;i++){
             HashMap<String,Object> map = new HashMap<String,Object>();
             map.put(EmployeeSimpleAdapter.EMPLOYEE_NAME,"liupan"+i);

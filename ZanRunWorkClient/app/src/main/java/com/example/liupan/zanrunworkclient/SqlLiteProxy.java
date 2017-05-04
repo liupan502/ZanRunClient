@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.liupan.zanrunworkclient.entity.*;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import com.example.liupan.zanrunworkclient.ZanRunDBHelper;
@@ -63,12 +65,14 @@ public class SqlLiteProxy {
         int noIndex = cursor.getColumnIndexOrThrow("no");
         int levelIndex = cursor.getColumnIndexOrThrow("level");
         int nameIndex = cursor.getColumnIndexOrThrow("name");
+        int rfidIndex = cursor.getColumnIndex("rfid");
 
         String uid = cursor.getString(uidIndex);
         String cid = cursor.getString(cidIndex);
         String no = cursor.getString(noIndex);
         int level = cursor.getInt(levelIndex);
         String name = cursor.getString(nameIndex);
+        String rfid = cursor.getString(rfidIndex);
 
         Employee employee = new Employee();
         employee.setId(uid);
@@ -76,6 +80,7 @@ public class SqlLiteProxy {
         employee.setEmployeeLevel(level);
         employee.setEmployeeNo(no);
         employee.setName(name);
+        employee.setRfid(rfid);
 
         return employee;
     }
@@ -94,7 +99,7 @@ public class SqlLiteProxy {
                 result.add(emloyee);
             }
         }
-        db.close();
+        //db.close();
         return result;
     }
 
@@ -108,7 +113,7 @@ public class SqlLiteProxy {
             result = getEmployeeFromCursor(cursor);
         }
 
-        db.close();
+        //db.close();
         return result;
     }
 
@@ -117,21 +122,27 @@ public class SqlLiteProxy {
             return false;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String updateEmployeeSql = "update employee_table set cid = ?,no = ?," +
-                "level = ?, name = ? where uid = ?";
+                "level = ?, name = ?, rfid = ? where uid = ?";
         db.execSQL(updateEmployeeSql,new Object[]{employee.getCompanyId(),
-        employee.getEmployeeNo(),employee.getEmployeeLevel(),employee.getName(),employee.getId()});
-        db.close();
+        employee.getEmployeeNo(),employee.getEmployeeLevel(),employee.getName(),employee.getRfid(),employee.getId()});
+        //db.close();
         return true;
     }
 
     public boolean insertEmployee(Employee employee){
         if(!isAvailable())
             return false;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String insertEmployeeSql = "insert into employee_table (uid,cid,no,level,name) values(?,?,?,?,?)";
-        db.execSQL(insertEmployeeSql,new Object[]{employee.getId(),employee.getCompanyId(),
-        employee.getEmployeeNo(),employee.getEmployeeLevel(),employee.getName()});
-        db.close();
+        try{
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            String insertEmployeeSql = "insert into employee_table (uid,cid,no,level,name,rfid) values(?,?,?,?,?,?)";
+            db.execSQL(insertEmployeeSql,new Object[]{employee.getId(),employee.getCompanyId(),
+                    employee.getEmployeeNo(),employee.getEmployeeLevel(),employee.getName(),employee.getRfid()});
+            //db.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         return true;
     }
 
@@ -141,7 +152,7 @@ public class SqlLiteProxy {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String deleteEmployeeSql = "delete from employee_table where uid = ?";
         db.execSQL(deleteEmployeeSql,new Object[]{employee.getId()});
-        db.close();
+        //db.close();
         return true;
     }
 
@@ -202,6 +213,7 @@ public class SqlLiteProxy {
         int mnumIndex = cursor.getColumnIndexOrThrow("mnum");
         int onumIndex = cursor.getColumnIndexOrThrow("onum");
         int tdateIndex = cursor.getColumnIndexOrThrow("tdate");
+        int rfidIndex = cursor.getColumnIndexOrThrow("rfid");
 
         String uid = cursor.getString(uidIndex);
         String cid = cursor.getString(cidIndex);
@@ -211,6 +223,7 @@ public class SqlLiteProxy {
         int mnum = cursor.getInt(mnumIndex);
         int onum = cursor.getInt(onumIndex);
         String tdate = cursor.getString(tdateIndex);
+        String rfid = cursor.getString(rfidIndex);
 
         flowCard.setId(uid);
         flowCard.setCompanyId(cid);
@@ -220,6 +233,7 @@ public class SqlLiteProxy {
         flowCard.setMantiNum(mnum);
         flowCard.setProductionName(pname);
         flowCard.setTerminalDate(tdate);
+        flowCard.setRfid(rfid);
 
         return flowCard;
     }
@@ -240,7 +254,7 @@ public class SqlLiteProxy {
                 result.add(procedure);
             }
         }
-        db.close();
+        //db.close();
         return result;
     }
 
@@ -254,7 +268,7 @@ public class SqlLiteProxy {
         if(cursor.moveToFirst()){
             result = getProcedureFromCursor(cursor);
         }
-        db.close();
+        //db.close();
         return result;
     }
 
@@ -265,7 +279,7 @@ public class SqlLiteProxy {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{procedure.getCompanyId(),procedure.getProcedureName(),
                 procedure.getProcedureNo(),procedure.getId()});
-        db.close();
+        //db.close();
         return true;
     }
 
@@ -276,7 +290,7 @@ public class SqlLiteProxy {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{procedure.getId(),procedure.getCompanyId(),
         procedure.getProcedureName(),procedure.getProcedureNo()});
-        db.close();
+        //db.close();
         return true;
     }
 
@@ -286,7 +300,7 @@ public class SqlLiteProxy {
         String sql = "delete from procedure_table where uid = ?";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{procedureId});
-        db.close();
+        //db.close();
         return true;
     }
 
@@ -304,7 +318,7 @@ public class SqlLiteProxy {
                 result.add(flowCard);
             }
         }
-        db.close();
+        //db.close();
         return result;
     }
 
@@ -318,7 +332,7 @@ public class SqlLiteProxy {
         if(cursor.moveToFirst()){
             result = getFlowCardFromCursor(cursor);
         }
-        db.close();
+        //db.close();
         return result;
     }
 
@@ -326,22 +340,23 @@ public class SqlLiteProxy {
         if(!isAvailable())
             return false;
         String sql = "update flowcard_table set cid = ?, no = ?,pname = ?, pno = ?,mnum = ?," +
-                " onum = ?, tdate = ? where uid = ?";
+                " onum = ?, tdate = ?, rfid = ?  where uid = ?";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{flowCard.getCompanyId(),flowCard.getCardNo(),flowCard.getProductionName(),
-                flowCard.getProductionNo(),flowCard.getMantiNum(),flowCard.getOrderNum(),flowCard.getTerminalDate(),flowCard.getId()});
-        db.close();
+                flowCard.getProductionNo(),flowCard.getMantiNum(),flowCard.getOrderNum(),flowCard.getTerminalDate(),
+                flowCard.getRfid(),flowCard.getId()});
+        //db.close();
         return true;
     }
 
     public boolean insertFlowCard(FlowCard flowCard){
         if(!isAvailable())
             return false;
-        String sql = "insert into flowcard_table (uid,cid,no,pname,pno,mnum,onum,tdate) values(?,?,?,?,?,?,?,?)";
+        String sql = "insert into flowcard_table (uid,cid,no,pname,pno,mnum,onum,tdate,rfid) values(?,?,?,?,?,?,?,?,?)";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{flowCard.getId(),flowCard.getCompanyId(),flowCard.getCardNo(),flowCard.getProductionName(),
-        flowCard.getProductionNo(),flowCard.getMantiNum(),flowCard.getOrderNum(),flowCard.getTerminalDate()});
-        db.close();
+        flowCard.getProductionNo(),flowCard.getMantiNum(),flowCard.getOrderNum(),flowCard.getTerminalDate(),flowCard.getRfid()});
+        //db.close();
         return true;
     }
 
@@ -351,7 +366,7 @@ public class SqlLiteProxy {
         String sql = "delete from flowcard_table where uid = ?";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{flowCardId});
-        db.close();
+        //db.close();
         return true;
     }
 
@@ -369,7 +384,7 @@ public class SqlLiteProxy {
                 result.add(procedureInfo);
             }
         }
-        db.close();
+        //db.close();
         return result;
     }
 
@@ -383,7 +398,7 @@ public class SqlLiteProxy {
         if(cursor.moveToFirst()){
             result = getProcedureInfoFromCursor(cursor);
         }
-        db.close();
+        //db.close();
         return result;
     }
 
@@ -394,7 +409,7 @@ public class SqlLiteProxy {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{pi.getCompanyId(),pi.getFlowCardNo(),pi.getQcConfirmStatus(),
                 pi.getNum(),pi.getProcedureRequest(),pi.getId()});
-        db.close();
+        //db.close();
         return true;
     }
 
@@ -404,7 +419,7 @@ public class SqlLiteProxy {
         String sql = "delete from procedureinfo_table where uid = ?";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{procedureInfoId});
-        db.close();
+        //db.close();
         return true;
     }
 
@@ -415,7 +430,7 @@ public class SqlLiteProxy {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{pi.getId(),pi.getCompanyId(),pi.getFlowCardNo(),
                 pi.getQcConfirmStatus(),pi.getNum(),pi.getProcedureRequest()});
-        db.close();
+        //db.close();
         return true;
     }
 
@@ -433,6 +448,8 @@ public class SqlLiteProxy {
         int procedureIdIndex = cursor.getColumnIndexOrThrow("pid");
         int managerIdIndex = cursor.getColumnIndexOrThrow("mid");
         int qcIdindex = cursor.getColumnIndexOrThrow("qcid");
+        int btimeIndex = cursor.getColumnIndexOrThrow("btime");
+        int etimeIndex = cursor.getColumnIndexOrThrow("etime");
 
         String uid = cursor.getString(uidIndex);
         String cid = cursor.getString(cidIndex);
@@ -445,6 +462,8 @@ public class SqlLiteProxy {
         int bpnum = cursor.getInt(badProductionNum);
         String mid = cursor.getString(managerIdIndex);
         String qcid = cursor.getString(qcIdindex);
+        String btime = cursor.getString(btimeIndex);
+        String etime = cursor.getString(etimeIndex);
 
 
         employeeTask.setId(uid);
@@ -458,9 +477,12 @@ public class SqlLiteProxy {
         employeeTask.setProcedureId(pid);
         employeeTask.setManagerId(mid);
         employeeTask.setQCId(qcid);
+        employeeTask.setStartTime(btime);
+        employeeTask.setUpdateTime(etime);
         
         return employeeTask;
     }
+
     public ArrayList<EmployeeTask> employeeTasks(String flowCardId){
         if(!isAvailable())
             return null;
@@ -475,7 +497,7 @@ public class SqlLiteProxy {
                 result.add(employeeTask);
             }
         }
-        db.close();
+        //db.close();
         return result;
     }
 
@@ -489,7 +511,7 @@ public class SqlLiteProxy {
         if(cursor.moveToFirst()){
             result = getEmployeeTaskFromCursor(cursor);
         }
-        db.close();
+        //db.close();
         return result;
     }
 
@@ -497,7 +519,7 @@ public class SqlLiteProxy {
         if(!isAvailable())
             return false;
         String sql = "update employee_task_table set cid = ?, ename = ?,eid = ?,"+
-        "fid = ?, pid = ?,status = ?, pnum = ?, bpnum = ? ,mid = ? ,qcid = ? where uid = ?";
+        "fid = ?, pid = ?,status = ?, pnum = ?, bpnum = ? ,mid = ? ,qcid = ?,etime = ?  where uid = ?";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{et.getCompanyId(),
             et.getEmployeeName(),
@@ -509,8 +531,9 @@ public class SqlLiteProxy {
             et.getBadProductionNum(),
             et.getManagerId(),
             et.getQCId(),
+            getCurrentTime(),
             et.getId()});
-        db.close();
+        //db.close();
         return true;
     }
 
@@ -520,14 +543,14 @@ public class SqlLiteProxy {
         String sql = "delete from employee_task_table where uid = ?";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{employeeTaskId});
-        db.close();
+        //db.close();
         return true;
     }
 
     public boolean insertEmployeeTask(EmployeeTask et){
         if(!isAvailable())
             return false;
-        String sql = "insert into employee_task_table (uid,cid,ename,eid,fid,pid,status,pnum,bpnum,mid,qcid) values(?,?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into employee_task_table (uid,cid,ename,eid,fid,pid,status,pnum,bpnum,mid,qcid,btime,etime) values(?,?,?,?,?,?,?,?,?,?,?,?)";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{et.getId(),
             et.getCompanyId(),
@@ -539,11 +562,25 @@ public class SqlLiteProxy {
             et.getProductionNum(),
             et.getBadProductionNum(),
             et.getManagerId(),
-            et.getQCId()
+            et.getQCId(),
+            getCurrentTime(),
+            getCurrentTime()
         });
-        db.close();
+        //db.close();
         return true;
     }
 
+    // YYYY-MM-DD HH:MM:SS
+    public String getCurrentTime(){
+        String currentTime = "";
+        try{
+            SimpleDateFormat    sDateFormat    =   new    SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            currentTime    =    sDateFormat.format(new    java.util.Date());
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
 
+        return currentTime;
+    }
 }

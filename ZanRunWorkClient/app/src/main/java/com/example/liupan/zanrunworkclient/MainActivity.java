@@ -38,6 +38,7 @@ import com.example.liupan.zanrunworkclient.EmployeeSimpleAdapter;
 import com.example.liupan.zanrunworkclient.entity.*;
 
 import Dialog.QCConfirmDialog;
+import Test.DBTest;
 import Test.SettingTest;
 
 
@@ -277,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         refreshButton.setOnClickListener(this);
 
         dbHelper = new ZanRunDBHelper((Context) this);
-
+        SqlLiteProxy.getInstance().start(dbHelper);
         // Example of a call to a native method
         TextView tv = (TextView) findViewById(R.id.order_no);
         tv.setText(stringFromJNI());
@@ -310,6 +311,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         //SettingTest.settingTest("abcd","dcba");
+
+        Thread thread=new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Log.e("1111", "111111111");
+                // TODO Auto-generated method stub
+                //DBTest.dbTest();
+            }
+        });
+        thread.start();
+
 
     }
 

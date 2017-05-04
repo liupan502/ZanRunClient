@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,19 @@ public class EmployeeSimpleAdapter extends SimpleAdapter implements AdapterView.
     }
 
     @Override
+    public Object getItem(int position){
+        HashMap<String,Object> employee = (HashMap<String, Object>) super.getItem(position);
+        if(employee.containsKey(EMPLOYEE_STATUS)){
+            int status = (int)employee.get(EMPLOYEE_STATUS);
+            if(status == 1){
+                employee.put(EmployeeSimpleAdapter.PRODUCTION_NUM,"qing zhao qa que ren!");
+            }
+        }
+
+        return (Object)employee;
+        //return super.getItem(position);
+    }
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
        //getResources().getColor(R.colorAccent);
         HashMap<String,Object> employee = (HashMap<String, Object>) getItem(position);
@@ -60,6 +74,8 @@ public class EmployeeSimpleAdapter extends SimpleAdapter implements AdapterView.
                     break;
                 case 1:
                     convertView.setBackgroundColor(Color.RED);
+                    //TextView textView = (TextView)convertView.findViewById(R.id.production_num);
+                    //textView.setText("qing zhao qa que ren!");
                     break;
                 default:
                     //convertView.setBackgroundColor(Color.BLUE);
@@ -73,6 +89,7 @@ public class EmployeeSimpleAdapter extends SimpleAdapter implements AdapterView.
         return super.getView(position, convertView, parent);
 
     }
+
 
 
     @Override

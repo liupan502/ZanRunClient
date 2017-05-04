@@ -3,15 +3,18 @@
 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="50dp"
 
     android:background="@color/colorPrimaryDark">
 
     <TextView
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_width="wrap_content"
-            android:background="@color/colorPrimary"
+
             android:layout_alignParentLeft="true"
             android:text="andakdsjflkajsdfkafsdkfj"
+            android:textSize="22sp"
+            android:layout_marginTop="10dp"
         android:id="@+id/employee_name"
         >
     </TextView>
@@ -21,6 +24,8 @@
         android:layout_width="wrap_content"
         android:layout_centerHorizontal="true"
         android:id="@+id/production_num"
+        android:textSize="22sp"
+        android:layout_marginTop="10dp"
         android:text="production num:">
     </TextView>
 
@@ -28,6 +33,8 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_alignParentRight="true"
+        android:textSize="22sp"
+        android:layout_marginTop="10dp"
         android:id="@+id/bad_num"
         android:text="production num:">
     </TextView>

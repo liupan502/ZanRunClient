@@ -25,11 +25,11 @@ public class ZanRunDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createEmployeeSql = "create table employee_table(uid varchar(128) , cid varchar(128)," +
-                "no varchar(128),level int, name varchar(128))";
+                "rfif varchar(128), no varchar(128),level int, name varchar(128))";
         db.execSQL(createEmployeeSql);
 
         String createFlowCardSql = "create table flowcard_table(uid varchar(128) ,cid varchar(128)," +
-                "no varchar(128),pname varchar(128),pno varchar(128),mnum int,onum int,tdate varchar(128))";
+                "rfif varchar(128), no varchar(128),pname varchar(128),pno varchar(128),mnum int,onum int,tdate varchar(128))";
         db.execSQL(createFlowCardSql);
 
         String createProcedureInfoSql = "create table procedureinfo_table(uid varchar(128) ,cid varchar(128)," +
@@ -42,10 +42,12 @@ public class ZanRunDBHelper extends SQLiteOpenHelper {
 
         String createEmployeeTaskSql = "create table employee_task_table(uid varchar(128) ,cid varchar(128)," +
                 "ename varchar(128),eid varchar(128),fid varchar(128) pid varchar(128) mid varchar(128), " +
-                "qcid varchar(128),status int,pnum int, bpnum int)";
+                "qcid varchar(128),status int,pnum int, bpnum int,btime varchar(128)" +
+                "utime varchar(128))";
+        db.execSQL(createEmployeeTaskSql);
 
         Log.i(TAG,"create db");
-        db.close();
+        //db.close();
     }
 
     @Override

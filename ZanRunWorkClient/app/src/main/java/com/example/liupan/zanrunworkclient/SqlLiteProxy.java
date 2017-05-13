@@ -90,7 +90,7 @@ public class SqlLiteProxy {
             return null;
         }
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(EMPLOYEE_TABLE,null,null,null,null,null,null);
+        Cursor cursor = db.rawQuery("select * from employee_table", new String[]{});
         ArrayList<Employee> result = new ArrayList<Employee>();
         if(cursor.moveToFirst()){
             for(int i=0;i<cursor.getCount();i++){
@@ -108,6 +108,20 @@ public class SqlLiteProxy {
             return null;
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from employee_table where uid = ?", new String[]{employeeId});
+        Employee result = null;
+        if(cursor.moveToFirst()){
+            result = getEmployeeFromCursor(cursor);
+        }
+
+        //db.close();
+        return result;
+    }
+
+    public Employee findEmployeeWithRfid(String rfid){
+        if(!isAvailable())
+            return null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from employee_table where rfid = ?", new String[]{rfid});
         Employee result = null;
         if(cursor.moveToFirst()){
             result = getEmployeeFromCursor(cursor);
@@ -286,7 +300,7 @@ public class SqlLiteProxy {
     public boolean insertProcedure(Procedure procedure){
         if(!isAvailable())
             return false;
-        String sql = "insert into procedure_table (uid,cid,name,no) values(?,?,?,?,?)";
+        String sql = "insert into procedure_table (uid,cid,name,no) values(?,?,?,?)";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{procedure.getId(),procedure.getCompanyId(),
         procedure.getProcedureName(),procedure.getProcedureNo()});
@@ -328,6 +342,20 @@ public class SqlLiteProxy {
         String sql = "select * from flowcard_table where uid = ?";
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(sql,new String[]{flowCardId});
+        FlowCard result = null;
+        if(cursor.moveToFirst()){
+            result = getFlowCardFromCursor(cursor);
+        }
+        //db.close();
+        return result;
+    }
+
+    public FlowCard findFlowCardWithRfid(String rfid){
+        if(!isAvailable())
+            return null;
+        String sql = "select * from flowcard_table where rfid = ?";
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(sql,new String[]{rfid});
         FlowCard result = null;
         if(cursor.moveToFirst()){
             result = getFlowCardFromCursor(cursor);
@@ -441,7 +469,7 @@ public class SqlLiteProxy {
         int cidIndex = cursor.getColumnIndexOrThrow("cid");
         int employeeNameIndex = cursor.getColumnIndexOrThrow("ename");
         int employeeIdIndex = cursor.getColumnIndexOrThrow("eid");
-        int taskIdIndex = cursor.getColumnIndexOrThrow("tid");
+        int taskIdIndex = cursor.getColumnIndexOrThrow("fid");
         int statusIndex = cursor.getColumnIndexOrThrow("status");
         int productionNum = cursor.getColumnIndexOrThrow("pnum");
         int badProductionNum = cursor.getColumnIndexOrThrow("bpnum");
@@ -449,7 +477,7 @@ public class SqlLiteProxy {
         int managerIdIndex = cursor.getColumnIndexOrThrow("mid");
         int qcIdindex = cursor.getColumnIndexOrThrow("qcid");
         int btimeIndex = cursor.getColumnIndexOrThrow("btime");
-        int etimeIndex = cursor.getColumnIndexOrThrow("etime");
+        int etimeIndex = cursor.getColumnIndexOrThrow("utime");
 
         String uid = cursor.getString(uidIndex);
         String cid = cursor.getString(cidIndex);
@@ -493,11 +521,33 @@ public class SqlLiteProxy {
         if(cursor.moveToFirst()){
             for(int i=0;i<cursor.getCount();i++){
                 cursor.moveToPosition(i);
+                try{
+                    EmployeeTask employeeTask = getEmployeeTaskFromCursor(cursor);
+                    result.add(employeeTask);
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        //db.close();
+        return result;
+    }
+
+    public ArrayList<EmployeeTask> finishedEmployeeTasks(){
+        if(!isAvailable())
+            return null;
+        String sql = "select * from employee_task_table where  status = ?";
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(sql,new String[]{"3"});
+        ArrayList<EmployeeTask> result = new ArrayList<EmployeeTask>();
+        if(cursor.moveToFirst()){
+            for(int i=0;i<cursor.getCount();i++){
+                cursor.moveToPosition(i);
                 EmployeeTask employeeTask = getEmployeeTaskFromCursor(cursor);
                 result.add(employeeTask);
             }
         }
-        //db.close();
         return result;
     }
 
@@ -519,7 +569,7 @@ public class SqlLiteProxy {
         if(!isAvailable())
             return false;
         String sql = "update employee_task_table set cid = ?, ename = ?,eid = ?,"+
-        "fid = ?, pid = ?,status = ?, pnum = ?, bpnum = ? ,mid = ? ,qcid = ?,etime = ?  where uid = ?";
+        "fid = ?, pid = ?,status = ?, pnum = ?, bpnum = ? ,mid = ? ,qcid = ?,utime = ?  where uid = ?";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{et.getCompanyId(),
             et.getEmployeeName(),
@@ -550,7 +600,7 @@ public class SqlLiteProxy {
     public boolean insertEmployeeTask(EmployeeTask et){
         if(!isAvailable())
             return false;
-        String sql = "insert into employee_task_table (uid,cid,ename,eid,fid,pid,status,pnum,bpnum,mid,qcid,btime,etime) values(?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into employee_task_table (uid,cid,ename,eid,fid,pid,status,pnum,bpnum,mid,qcid,btime,utime) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL(sql,new Object[]{et.getId(),
             et.getCompanyId(),

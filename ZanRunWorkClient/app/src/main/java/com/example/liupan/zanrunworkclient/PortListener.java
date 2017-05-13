@@ -32,17 +32,20 @@ public class PortListener implements Runnable {
     private ZanRunSerialPortHelper helper = null;
 
 
-    private PortListenHandler portListenHandler = null;
+    private MainActivity.PortListenHandler portListenHandler = null;
 
-    Message obtainNewCardMessage(byte[] content){
+    Message obtainNewCardMessage(String rfid){
         Message msg = null;
-        if(portListenHandler == null)
+        if(portListenHandler == null || rfid.isEmpty())
             return msg;
         portListenHandler.removeMessages(0);
-        msg = portListenHandler.obtainMessage(TASK_TYPE,0,0,("this is a task"+count++));
+        msg = portListenHandler.obtainMessage(TASK_TYPE,0,0,rfid);
         return msg;
     }
 
+    public void setPortListenHandler(MainActivity.PortListenHandler portListenHandler){
+        this.portListenHandler = portListenHandler;
+    }
 
     void OpenPort(){
 
@@ -61,8 +64,9 @@ public class PortListener implements Runnable {
             String result = MyFunc.ByteArrToHex(ComRecData.bRec);
             Log.i("no_tag", result);
             Log.e("no_tag_error",result);
+            String rfid = "";
             if(!result.equals(empty_id_msg)){
-                int a = 0;
+                /*int a = 0;
                 a++;
                 char[] tmp = new char[16];
 
@@ -71,9 +75,16 @@ public class PortListener implements Runnable {
                     int tmp_int =  Integer.parseInt(MyFunc.Byte2Hex(ComRecData.bRec[i]), 16);
                     tmp[i-10] = (char)tmp_int;
                 }
-                int length = tmp.length;
+                int length = tmp.length;*/
+                String[] tmpStrs = result.split(" ");
+                int count = tmpStrs.length;
+                if(count == 28){
+                    for(int i=13;i<17;i++){
+                        rfid = rfid+tmpStrs[i];
+                    }
+                }
             }
-            Message msg = PortListener.this.obtainNewCardMessage(ComRecData.bRec);
+            Message msg = PortListener.this.obtainNewCardMessage(rfid);
             if(msg == null || portListenHandler ==null)
                 return;
             msg.sendToTarget();
@@ -88,6 +99,8 @@ public class PortListener implements Runnable {
     public void run()  {
 
         try{
+            Looper mainLooper = Looper.getMainLooper();
+            //portListenHandler = new MainActivity.PortListenHandler(mainLooper);
             helper = new ZanRunSerialPortHelper(filePath,brate);
             helper.open();
             helper.setHexLoopData(get_id_msg);
@@ -117,7 +130,7 @@ public class PortListener implements Runnable {
         handler.obtainMessage(TASK_TYPE,"123456");*/
     }
 
-    private class PortListenHandler extends android.os.Handler{
+    /*private class PortListenHandler extends android.os.Handler{
         public PortListenHandler(Looper looper){
             super(looper);
         }
@@ -126,5 +139,5 @@ public class PortListener implements Runnable {
         public void handleMessage(Message msg){
 
         }
-    }
+    }*/
 }

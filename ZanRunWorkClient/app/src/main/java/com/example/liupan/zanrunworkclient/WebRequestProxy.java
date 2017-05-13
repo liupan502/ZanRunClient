@@ -388,20 +388,7 @@ public class WebRequestProxy {
                 connection.setDoInput(true);
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setRequestProperty("Charset", "UTF-8");
-                //connection.setRequestProperty("Content-Type", "x-www-form-urlencoded");
-                //connection.setRequestProperty("MyProperty", "this is me!");
-                //OutputStream
-                /*DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.writeBytes(params);
-                wr.flush();
-                wr.close();*/
-                /*OutputStream os = connection.getOutputStream();
-                int count = 0;
-                while((count=file.read()) != -1){
-                    os.write(count);
-                }
-                os.flush();
-                os.close();*/
+
 
                 OutputStream  out = connection.getOutputStream();
                 // 写入请求的字符串

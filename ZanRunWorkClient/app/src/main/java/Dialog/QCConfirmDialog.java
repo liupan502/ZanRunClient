@@ -45,7 +45,8 @@ public class QCConfirmDialog extends BaseConfirmDialog {
     @Override
     protected  void onCreate(Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
-
+        Window dialogWindow = getWindow();
+        dialogWindow.requestFeature(Window.FEATURE_NO_TITLE);
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_task_start_confirm ,null);
         setContentView(view);
@@ -69,7 +70,7 @@ public class QCConfirmDialog extends BaseConfirmDialog {
             }
         });
 
-        Window dialogWindow = getWindow();
+
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         DisplayMetrics d = context.getResources().getDisplayMetrics(); // 获取屏幕宽、高用
         lp.width = (int) (d.widthPixels * 0.8); // 高度设置为屏幕的0.6

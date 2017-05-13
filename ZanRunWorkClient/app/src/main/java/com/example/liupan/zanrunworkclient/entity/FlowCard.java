@@ -149,4 +149,15 @@ public class FlowCard extends BaseObject {
             }
         }
     }
+
+    public String getRequest(String procedureId){
+        String request = "";
+        for(int i=0;i<procedureInfos.size();i++){
+            ProcedureInfo procedureInfo = procedureInfos.get(i);
+            if(procedureInfo.getId() == procedureId){
+                request = procedureInfo.getProcedureRequest();
+            }
+        }
+        return request;
+    }
 }

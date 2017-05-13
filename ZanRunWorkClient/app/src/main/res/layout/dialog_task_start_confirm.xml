@@ -11,7 +11,7 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="qing shua ka kai shi ren wu"
+            android:text="请QC刷卡确认开始工作"
             >
         </TextView>
     </LinearLayout>
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="60dp"
             android:id="@+id/QCEnsureButton"
-            android:text="ensure">
+            android:text="确认">
 
         </Button>
 
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:id="@+id/QCCancelButton"
-            android:text="cancel">
+            android:text="取消">
 
         </Button>
         </LinearLayout>

@@ -45,7 +45,7 @@ public class EmployeeSimpleAdapter extends SimpleAdapter implements AdapterView.
         if(employee.containsKey(EMPLOYEE_STATUS)){
             int status = (int)employee.get(EMPLOYEE_STATUS);
             if(status == 1){
-                employee.put(EmployeeSimpleAdapter.PRODUCTION_NUM,"qing zhao qa que ren!");
+                //employee.put(EmployeeSimpleAdapter.PRODUCTION_NUM,"qing zhao qa que ren!");
             }
         }
 
@@ -60,10 +60,7 @@ public class EmployeeSimpleAdapter extends SimpleAdapter implements AdapterView.
             if(convertView ==null)
             {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.employee_list_item, null);
-                //convertView = LayoutInflater.from()
             }
-
-
 
             int status = -1;
             if(employee.containsKey(EMPLOYEE_STATUS))

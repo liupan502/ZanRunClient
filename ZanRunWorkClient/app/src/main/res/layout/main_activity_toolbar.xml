@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
 
         android:textColor="@color/white"
-        android:text="shuaxin"
+        android:text="数据刷新"
         android:paddingRight="10dp"
         android:layout_gravity="right"
          />
@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:text="shezhi"
+        android:text="全局设置"
         android:textColor="@color/white"
         android:layout_gravity="right" />
 

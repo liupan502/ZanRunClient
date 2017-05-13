@@ -72,6 +72,7 @@ public class SettingConfirmDialog extends BaseConfirmDialog  implements  Adapter
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_setting_confirm ,null);
         setContentView(view);
+        this.setTitle("设置");
         Button ensureButton = (Button) findViewById(R.id.SettingEnsureButton);
         ensureButton.setEnabled(false);
         ensureButton.setOnClickListener(new View.OnClickListener() {

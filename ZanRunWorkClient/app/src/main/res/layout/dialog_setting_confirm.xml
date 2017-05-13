@@ -11,7 +11,7 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="server ip:">
+            android:text="服务器地址:">
         </TextView>
 
         <EditText
@@ -31,7 +31,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="clientType"
+            android:text="工位机类型"
             >
         </TextView>
         <Spinner
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="60dp"
             android:id="@+id/SettingEnsureButton"
-            android:text="ensure">
+            android:text="确定">
 
         </Button>
 
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:id="@+id/SettingCancelButton"
-            android:text="cancel">
+            android:text="取消">
 
         </Button>
     </LinearLayout>

@@ -9,12 +9,12 @@ import com.example.liupan.zanrunworkclient.SettingProxy;
 public class SettingTest {
     public static final void settingTest(String serverHost,String procedureId){
 
-        SettingProxy settingProxy = SettingProxy.getInstance();
+        /*SettingProxy settingProxy = SettingProxy.getInstance();
         String tmp1 = settingProxy.getProcedureId();
         String tmp2 = settingProxy.getServerHost();
         settingProxy.setProcedureId(procedureId);
         settingProxy.setServerHost(serverHost);
         String tmp3 = settingProxy.getProcedureId();
-        String tmp4 = settingProxy.getServerHost();
+        String tmp4 = settingProxy.getServerHost();*/
     }
 }

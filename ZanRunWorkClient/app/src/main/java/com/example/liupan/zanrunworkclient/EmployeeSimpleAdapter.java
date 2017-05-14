@@ -66,7 +66,10 @@ public class EmployeeSimpleAdapter extends SimpleAdapter implements AdapterView.
             if(employee.containsKey(EMPLOYEE_STATUS))
                  status = (int)employee.get(EMPLOYEE_STATUS);
             switch (status){
-                case 0:
+                case 3:
+                    convertView.setBackgroundColor(Color.GRAY);
+                    break;
+                case 2:
                     convertView.setBackgroundColor(Color.BLUE);
                     break;
                 case 1:

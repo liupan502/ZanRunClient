@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -38,15 +39,18 @@ public class SettingConfirmDialog extends BaseConfirmDialog  implements  Adapter
 
     private ArrayAdapter<String> adapter = null;
 
+    private boolean ensureButtonEnabled = false;
+
     ArrayList<String> procedureNames = new ArrayList<String>();
 
     ArrayList<Procedure> procedures = new ArrayList<Procedure>();
 
     Procedure currentProcedure = null;
 
-    public SettingConfirmDialog(Context context) {
+    public SettingConfirmDialog(Context context,boolean ensureButtonEnabled) {
         super(context);
         this.context = context;
+        this.ensureButtonEnabled = ensureButtonEnabled;
     }
 
     @Override
@@ -68,13 +72,14 @@ public class SettingConfirmDialog extends BaseConfirmDialog  implements  Adapter
     @Override
     protected  void onCreate(Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
-
+        Window dialogWindow = getWindow();
+        dialogWindow.requestFeature(Window.FEATURE_NO_TITLE);
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_setting_confirm ,null);
         setContentView(view);
         this.setTitle("设置");
         Button ensureButton = (Button) findViewById(R.id.SettingEnsureButton);
-        ensureButton.setEnabled(false);
+        ensureButton.setEnabled(ensureButtonEnabled);
         ensureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,7 +102,7 @@ public class SettingConfirmDialog extends BaseConfirmDialog  implements  Adapter
             }
         });
 
-        SettingProxy settingProxy = SettingProxy.getInstance();
+        SettingProxy settingProxy = SettingProxy.getInstance(context);
         String procedureId = settingProxy.getProcedureId();
 
         SqlLiteProxy sqlLiteProxy = SqlLiteProxy.getInstance();
@@ -113,20 +118,23 @@ public class SettingConfirmDialog extends BaseConfirmDialog  implements  Adapter
             procedureNames.add(procedure.getProcedureName());
         }
         Spinner spinner = (Spinner) findViewById(R.id.clientTypeSpinner);
-        String[] spinnerContent = {"clientType1","clientType2","clientType3"};
+        ;
         ArrayList<String> spinnerContentList = new ArrayList<>();
-        //spinnerContentList.add("clientType4");
-        //spinnerContentList.add("clientType5");
         adapter= new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item,procedureNames);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         if(currentProcedure != null)
             spinner.setSelection(selectedIndex,false);
-        Window dialogWindow = getWindow();
+        spinner.setOnItemSelectedListener(this);
+
+        String currentHost = settingProxy.getServerHost();
+        ipText = (EditText) findViewById(R.id.serverIpEdit);
+        ipText.setText(currentHost);
+
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         DisplayMetrics d = context.getResources().getDisplayMetrics(); // 获取屏幕宽、高用
-        lp.width = (int) (d.widthPixels * 0.8); // 高度设置为屏幕的0.6
+        lp.width = (int) (d.widthPixels * 0.4); // 高度设置为屏幕的0.6
         dialogWindow.setAttributes(lp);
     }
 

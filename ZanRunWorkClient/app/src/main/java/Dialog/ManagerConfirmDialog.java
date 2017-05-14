@@ -1,6 +1,7 @@
 package Dialog;
 
 import android.app.Dialog;
+import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.liupan.zanrunworkclient.R;
@@ -70,8 +72,15 @@ public class ManagerConfirmDialog extends BaseConfirmDialog {
                 if(clif != null){
                     if(proNumText == null || badProNumText == null)
                         return;
-                    int badProNum = Integer.parseInt(badProNumText.getText().toString());
-                    int proNum = Integer.parseInt(proNumText.getText().toString());
+                    int badProNum = -1,proNum = -1;
+                    try{
+                        badProNum = Integer.parseInt(badProNumText.getText().toString());
+                        proNum = Integer.parseInt(proNumText.getText().toString());
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
                     clif.DoConfirm(proNum,badProNum,employeeTaskId,ManagerConfirmDialog.this,employee);
                 }
             }
@@ -86,7 +95,8 @@ public class ManagerConfirmDialog extends BaseConfirmDialog {
             }
         });
 
-
+        proNumText = (EditText) findViewById(R.id.ProductionEdit);
+        badProNumText = (EditText) findViewById(R.id.BadProductionEdit);
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         DisplayMetrics d = context.getResources().getDisplayMetrics(); // 获取屏幕宽、高用
         lp.width = (int) (d.widthPixels * 0.4); // 高度设置为屏幕的0.6

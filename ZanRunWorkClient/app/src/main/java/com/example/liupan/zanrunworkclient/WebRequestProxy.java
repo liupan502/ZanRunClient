@@ -138,21 +138,7 @@ public class WebRequestProxy {
     }
 
     private ArrayList<Employee> getEmployeesFromString(String jsonStr){
-        /*ArrayList<Employee> employees = null;
-        try{
-            JSONObject jsonObject = new JSONObject(jsonStr);
-            ArrayList<HashMap<String,Object>> data = (ArrayList<HashMap<String,Object>>) jsonObject.get("data");
-            for(int i=0;i<data.size();i++){
-                Employee employee = new Employee();
-                employee.initWithMap(data.get(i));
-                employees.add(employee);
-            }
-        }
-        catch(Exception e){
 
-        }
-        return employees;*/
-        //JSONObject jsonOn = new JSONObject();
         ArrayList<Employee> result = new ArrayList<Employee>();
         try{
             JSONObject jsonObject = new JSONObject(jsonStr);
@@ -202,21 +188,7 @@ public class WebRequestProxy {
     }
 
     private ArrayList<Procedure> getProceduresFromString(String jsonStr){
-        /*ArrayList<Procedure> procedures = null;
-        try{
-            JSONObject jsonObject = new JSONObject(jsonStr);
-            ArrayList<HashMap<String,Object>> data = (ArrayList<HashMap<String,Object>>) jsonObject.get("data");
-            for(int i=0;i<data.size();i++){
-                Procedure procedure = new Procedure();
-                procedure.initWithMap(data.get(i));
-                procedures.add(procedure);
-            }
-        }
-        catch (Exception e){
 
-        }
-        return procedures;
-        */
         ArrayList<Procedure> result = new ArrayList<Procedure>();
         try{
             JSONObject jsonObject = new JSONObject(jsonStr);
@@ -383,6 +355,8 @@ public class WebRequestProxy {
             URL url = new URL(urlStr);
             HttpURLConnection connection =(HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
+            //connection.setConnectTimeout(5*1000);
+            connection.setReadTimeout(5*1000);
             if(params != null){
                 connection.setDoOutput(true);
                 connection.setDoInput(true);

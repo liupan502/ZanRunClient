@@ -5,19 +5,21 @@
     android:layout_height="200dp"
     android:background="@color/colorPrimaryDark">
     <LinearLayout
+        android:id="@+id/firstRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:textSize="22sp"
             android:text="服务器地址:">
         </TextView>
 
         <EditText
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:ems="7"
+            android:ems="10"
             android:id="@+id/serverIpEdit"
             android:text="192.168.1.134"
             android:layout_marginLeft="50dp">
@@ -25,12 +27,16 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/secondRow"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_below = "@id/firstRow"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="22sp"
             android:text="工位机类型"
             >
         </TextView>

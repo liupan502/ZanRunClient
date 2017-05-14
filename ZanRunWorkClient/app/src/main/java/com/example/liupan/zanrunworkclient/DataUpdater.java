@@ -18,7 +18,7 @@ import static java.lang.Thread.sleep;
 public class DataUpdater implements Runnable {
 
 
-    private static final int minuteNum = 1;
+    private static final int minuteNum = 30;
 
     private static final int minuteToSecondFactor = 60;
 
@@ -43,14 +43,23 @@ public class DataUpdater implements Runnable {
     }
 
     private void uploadLocalData(){
-        SettingProxy settingProxy = SettingProxy.getInstance();
-        String host = settingProxy.getServerHost();
-        String[] tmp = host.split(":");
-        //WebRequestProxy.server_ip = "192.168.0.121";
-        //WebRequestProxy.server_port = 8080;
-        WebRequestProxy.server_ip = tmp[0];
-        WebRequestProxy.server_port = tmp.length == 2?Integer.parseInt(tmp[1]):8080;
-        //ArrayList<EmployeeTask > tasks = createTestTask(2);
+        SettingProxy settingProxy = SettingProxy.getInstance(mainActivity.getApplicationContext());
+        String ip = "";
+        int port = -1;
+        try{
+            String host = settingProxy.getServerHost();
+            String[] tmpStrs = host.split(":");
+            if(tmpStrs.length == 2){
+                ip = tmpStrs[0];
+                port = Integer.parseInt(tmpStrs[1]);
+            }
+        }
+        catch(Exception e){
+
+        }
+        if(port < 0 || ip.isEmpty())
+            return;
+
         SqlLiteProxy sqlLiteProxy = SqlLiteProxy.getInstance();
         ArrayList<EmployeeTask> finishEmployeeTasks = sqlLiteProxy.finishedEmployeeTasks();
         WebRequestProxy wrp = WebRequestProxy.getInstance();
@@ -61,59 +70,88 @@ public class DataUpdater implements Runnable {
     }
 
     private void pullServerData(){
+        SettingProxy settingProxy = SettingProxy.getInstance(mainActivity.getApplicationContext());
+        String ip = "";
+        int port = -1;
+        try{
+            String host = settingProxy.getServerHost();
+            String[] tmpStrs = host.split(":");
+            if(tmpStrs.length == 2){
+                ip = tmpStrs[0];
+                port = Integer.parseInt(tmpStrs[1]);
+            }
+        }
+        catch(Exception e){
 
-        //SettingProxy settingProxy = SettingProxy.getInstance();
+        }
+        if(port < 0 || ip.isEmpty())
+            return;
 
-        //WebRequestProxy.server_ip = "192.168.0.158";
-        WebRequestProxy.server_ip = "liugang187.wicp.net";
-        WebRequestProxy.server_port = 80;
-        /*String host = settingProxy.getServerHost();
-        String[] tmp = host.split(":");
-        WebRequestProxy.server_ip = tmp[0];
-        WebRequestProxy.server_port = tmp.length == 2?Integer.parseInt(tmp[1]):8080;*/
+        WebRequestProxy.server_ip = ip;
+        WebRequestProxy.server_port = port;
+
+        boolean doPullDataSuccessfully = true;
         WebRequestProxy wrp = WebRequestProxy.getInstance();
 
         SqlLiteProxy sqlLiteProxy = SqlLiteProxy.getInstance();
         ArrayList<Employee> employees = wrp.getEmployees();
-        try{
+
+        if(employees.size() > 0){
+
             ArrayList<Employee> oldEmployees = sqlLiteProxy.employees();
             for(int i = 0;i<oldEmployees.size();i++){
-                sqlLiteProxy.deleteEmployee(employees.get(i));
+                sqlLiteProxy.deleteEmployee(oldEmployees.get(i));
             }
             for(int i=0;i<employees.size();i++){
                 sqlLiteProxy.insertEmployee(employees.get(i));
             }
         }
-        catch(Exception e){
-            e.printStackTrace();
+        else{
+            doPullDataSuccessfully = false;
         }
 
 
 
         ArrayList<FlowCard> flowCards = wrp.getFlowCards();
-        ArrayList<FlowCard> oldFlowCards = sqlLiteProxy.flowCards();
-        for(int i=0;i<oldFlowCards.size();i++){
-            sqlLiteProxy.deleteFlowCard(oldFlowCards.get(i).getId());
+        if(flowCards.size() > 0){
+            ArrayList<FlowCard> oldFlowCards = sqlLiteProxy.flowCards();
+            for(int i=0;i<oldFlowCards.size();i++){
+                sqlLiteProxy.deleteFlowCard(oldFlowCards.get(i).getId());
+            }
+            for(int i=0;i<flowCards.size();i++){
+                sqlLiteProxy.insertFlowCard(flowCards.get(i));
+            }
         }
-        for(int i=0;i<flowCards.size();i++){
-            sqlLiteProxy.insertFlowCard(flowCards.get(i));
+        else{
+            doPullDataSuccessfully = false;
         }
+
 
 
         ArrayList<Procedure> procedures = wrp.getProcedures();
-        ArrayList<Procedure> oldProcedures = sqlLiteProxy.procedures();
-        for(int i=0;i<oldProcedures.size();i++){
-            sqlLiteProxy.deleteProcedure(oldProcedures.get(i).getId());
-        }
-        for(int i=0;i<procedures.size();i++){
-            try{
-                sqlLiteProxy.insertProcedure(procedures.get(i));
+        if(procedures.size() > 0){
+            ArrayList<Procedure> oldProcedures = sqlLiteProxy.procedures();
+            for(int i=0;i<oldProcedures.size();i++){
+                sqlLiteProxy.deleteProcedure(oldProcedures.get(i).getId());
             }
-            catch(Exception e){
-                e.printStackTrace();
-            }
+            for(int i=0;i<procedures.size();i++){
+                try{
+                    sqlLiteProxy.insertProcedure(procedures.get(i));
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
 
+            }
         }
+        else{
+            doPullDataSuccessfully = false;
+        }
+
+        if(doPullDataSuccessfully == true && SettingProxy.getInstance(mainActivity.getApplicationContext()).isInit() == false){
+            SettingProxy.getInstance(mainActivity.getApplicationContext()).setIsInit(true);
+        }
+
     }
 
     @Override
@@ -124,14 +162,14 @@ public class DataUpdater implements Runnable {
             boolean isUpdating = mainActivity.isUpdating();
             if(!isUpdating){
                 handler.removeMessages(0);
-                Message startUpdateMsg = handler.obtainMessage(0);
+                Message startUpdateMsg = handler.obtainMessage(1);
                 startUpdateMsg.sendToTarget();
 
                 pullServerData();
                 uploadLocalData();
 
                 handler.removeMessages(0);
-                Message endUpdateMsg = handler.obtainMessage(1);
+                Message endUpdateMsg = handler.obtainMessage(2);
                 endUpdateMsg.sendToTarget();
             }
             try{
